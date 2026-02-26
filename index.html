@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Fintech | Invest in the Future of Korean Finance</title>
+    <title>K-Fintech | Premium Investor Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,26 +17,110 @@
     <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="text-2xl font-bold tracking-tighter">K-<span class="text-blue-500">Fintech</span></div>
-            <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
-                <a href="#market" class="hover:text-white transition">Market Insights</a>
-                <a href="#kfintech" class="hover:text-white transition">Featured K-Fintechs</a>
-                <a href="admin.html" class="text-blue-400 hover:text-blue-300 transition">Go to Admin -></a>
+            <div class="hidden lg:flex space-x-8 text-sm font-medium text-slate-300">
+                <a href="#market-insights" class="hover:text-white transition">Market Insights</a>
+                <a href="#kfintech-directory" class="hover:text-white transition">K-Fintech Directory</a>
+                <a href="#ir-room" class="hover:text-blue-400 transition text-blue-300"><i class="fas fa-lock text-xs mr-1"></i>IR Room</a>
+                <a href="#global-partners" class="hover:text-white transition">Global Partners</a>
+                <a href="admin.html" class="text-gray-500 hover:text-white transition"><i class="fas fa-cog"></i></a>
             </div>
-            <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-semibold transition">Get 2026 Report</a>
+            <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-semibold transition shadow-lg shadow-blue-500/30">Contact / Match</a>
         </div>
     </nav>
 
-    <section class="pt-32 pb-20 px-6 text-center">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6">Accelerating the <span class="gradient-text">Future of Finance</span></h1>
-        <p class="text-xl text-slate-400 mb-10 max-w-3xl mx-auto">Connect with top-tier K-Fintech companies backed by data-driven 2026 market projections.</p>
-        <a href="#kfintech" class="bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition">Explore K-Fintechs</a>
+    <section class="pt-32 pb-20 px-6 relative overflow-hidden text-center">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="max-w-5xl mx-auto relative z-10 mt-16">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">Invest in the <span class="gradient-text">Future of Korean Finance</span></h1>
+            <p class="text-xl text-slate-400 mb-10 max-w-3xl mx-auto">Exclusive access to vetted K-Fintech companies, market intelligence, and government-backed opportunities.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#kfintech-directory" class="bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition">Explore K-Fintechs</a>
+                <a href="#ir-room" class="border border-blue-500 text-blue-400 px-8 py-3 rounded-full font-bold hover:bg-blue-900/30 transition"><i class="fas fa-key mr-2"></i>Access IR Room</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="market-insights" class="py-20 bg-slate-800/50 border-y border-slate-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-4">Market Insights</h2>
+            <p class="text-slate-400 mb-12">Data-driven trends and regulatory guides for global investors.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-glass p-8 rounded-2xl border border-slate-700 hover:border-blue-500 transition">
+                    <h3 class="text-xl font-bold mb-3 text-blue-400">Fintech Trends 2026</h3>
+                    <p class="text-sm text-slate-300">Analysis of digital banking, AI integration, and Web3 expansion in the Korean market.</p>
+                </div>
+                <div class="bg-glass p-8 rounded-2xl border border-slate-700 hover:border-green-500 transition">
+                    <h3 class="text-xl font-bold mb-3 text-green-400">Regulatory Sandbox</h3>
+                    <p class="text-sm text-slate-300">How the Korean government is accelerating innovation with relaxed regulations.</p>
+                </div>
+                <div class="bg-glass p-8 rounded-2xl border border-slate-700 hover:border-purple-500 transition">
+                    <h3 class="text-xl font-bold mb-3 text-purple-400">K-Tax Guide for VCs</h3>
+                    <p class="text-sm text-slate-300">Comprehensive tax benefits and structuring for foreign direct investment (FDI).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="kfintech-directory" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-4">K-Fintech Directory</h2>
+            <p class="text-slate-400 mb-8">Filter by industry and growth stage to find your next big investment.</p>
+            
+            <div class="flex flex-wrap gap-4 mb-10">
+                <select class="bg-slate-800 border border-slate-600 rounded px-4 py-2 text-sm text-white focus:outline-none">
+                    <option>All Industries</option>
+                    <option>Payment / Remittance</option>
+                    <option>Security / KYC</option>
+                    <option>Blockchain / Web3</option>
+                </select>
+                <select class="bg-slate-800 border border-slate-600 rounded px-4 py-2 text-sm text-white focus:outline-none">
+                    <option>All Stages</option>
+                    <option>Seed / Pre-A</option>
+                    <option>Series A</option>
+                    <option>Series B+</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <span class="bg-blue-900/50 text-blue-400 text-xs font-bold px-3 py-1 rounded-full">Payment</span>
+                    <span class="bg-green-900/50 text-green-400 text-xs font-bold px-3 py-1 rounded-full ml-2">Series A</span>
+                    <h3 class="text-xl font-bold mt-4 mb-2">PayStream Korea</h3>
+                    <p class="text-sm text-slate-400 mb-4">Cross-border B2B payment infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ir-room" class="py-24 px-6 bg-slate-800/80 border-y border-slate-700 text-center">
+        <div class="max-w-3xl mx-auto">
+            <i class="fas fa-lock text-5xl text-blue-500 mb-6"></i>
+            <h2 class="text-4xl font-bold mb-4">Exclusive IR Room</h2>
+            <p class="text-slate-400 mb-8">Access detailed performance data, complete pitch decks, and executive team profiles. Available only for verified institutional investors.</p>
+            <button onclick="alert('Supabase Auth 로그인이 곧 연결됩니다!')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold transition shadow-lg">
+                Investor Login / Request Access
+            </button>
+        </div>
+    </section>
+
+    <section id="global-partners" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">Trusted by Global Partners</h2>
+            <p class="text-slate-400 mb-12">Join a network of top-tier VCs, Accelerators, and Government entities.</p>
+            <div class="flex flex-wrap justify-center gap-8 opacity-60">
+                <h3 class="text-2xl font-bold text-slate-500">Global VC Fund</h3>
+                <h3 class="text-2xl font-bold text-slate-500">K-Fintech Gov</h3>
+                <h3 class="text-2xl font-bold text-slate-500">Fintech Accelerator</h3>
+                <h3 class="text-2xl font-bold text-slate-500">Tech Bank</h3>
+            </div>
+        </div>
     </section>
 
     <section id="contact" class="py-24 bg-gradient-to-b from-slate-900 to-black px-6">
         <div class="max-w-4xl mx-auto bg-slate-800/80 p-10 rounded-3xl border border-slate-700 shadow-2xl">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold mb-4">Unlock the 2026 K-Fintech Report</h2>
-                <p class="text-slate-400">Join our exclusive investor network.</p>
+                <h2 class="text-3xl font-bold mb-4">Schedule a Meeting & Match</h2>
+                <p class="text-slate-400">Connect directly with our investment review team or request a targeted 1:1 match with a K-Fintech company.</p>
             </div>
             
             <form id="investorForm" class="space-y-6">
@@ -46,7 +130,7 @@
                         <input type="text" id="fullName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Organization</label>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Fund / Organization</label>
                         <input type="text" id="orgName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
                     </div>
                 </div>
@@ -55,42 +139,35 @@
                     <input type="email" id="email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Areas of Interest</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Inquiry Type</label>
                     <select id="interest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
-                        <option value="Payment">Payment & Remittance</option>
-                        <option value="Blockchain">Blockchain & Web3</option>
-                        <option value="Security">Security & KYC</option>
+                        <option value="Match">Request K-Fintech Match</option>
+                        <option value="Meeting">Schedule a Meeting</option>
+                        <option value="IR Access">Request IR Room Access</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg text-lg mt-4">
-                    Request Report & Join Network
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg text-lg mt-4 shadow-lg shadow-blue-500/30">
+                    Submit Inquiry
                 </button>
             </form>
         </div>
     </section>
 
     <script>
-        // 폼 제출 시 데이터를 임시 저장소에 저장하는 로직
         document.getElementById('investorForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 페이지 새로고침 방지
-            
+            e.preventDefault();
             const newInvestor = {
                 name: document.getElementById('fullName').value,
                 org: document.getElementById('orgName').value,
                 email: document.getElementById('email').value,
                 interest: document.getElementById('interest').value,
-                date: new Date().toISOString().split('T')[0] // 오늘 날짜
+                date: new Date().toISOString().split('T')[0]
             };
-
-            // 기존 데이터 불러오기 (없으면 빈 배열)
             let investors = JSON.parse(localStorage.getItem('investorDB')) || [];
-            investors.push(newInvestor); // 새 데이터 추가
-            
-            // 다시 저장하기
+            investors.push(newInvestor);
             localStorage.setItem('investorDB', JSON.stringify(investors));
-            
-            alert('Thank you! 성공적으로 접수되었습니다. 관리자 페이지에서 확인해보세요!');
-            this.reset(); // 폼 초기화
+            alert('Thank you! 담당자가 곧 연락드리겠습니다.');
+            this.reset();
         });
     </script>
 </body>
