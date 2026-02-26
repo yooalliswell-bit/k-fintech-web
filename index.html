@@ -124,26 +124,27 @@
             <form id="investorForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
+                        <label for="fullName" class="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
                         <input type="text" id="fullName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white" placeholder="John Doe">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Fund / Organization</label>
+                        <label for="orgName" class="block text-sm font-medium text-slate-300 mb-2">Fund / Organization</label>
                         <input type="text" id="orgName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white" placeholder="Global VC">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Work Email</label>
+                    <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Work Email</label>
                     <input type="email" id="email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white" placeholder="john@example.com">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Inquiry Type</label>
+                    <label for="interest" class="block text-sm font-medium text-slate-300 mb-2">Inquiry Type</label>
                     <select id="interest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
                         <option value="Match">Request K-Fintech Match</option>
                         <option value="Meeting">Schedule a Meeting</option>
                         <option value="IR Access">Request IR Room Access</option>
                     </select>
                 </div>
+                
                 <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg text-lg mt-4 shadow-lg shadow-blue-500/30 transition">
                     Submit Inquiry
                 </button>
