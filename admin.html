@@ -3,92 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Fintech Admin</title>
+    <title>K-Fintech Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .nowrap { white-space: nowrap; }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
 
     <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
         <div class="p-6 text-2xl font-bold border-b border-slate-700">K-Fintech Admin</div>
         <nav class="flex-1 p-4 space-y-2">
-            <a href="index.html" class="block p-3 rounded transition text-blue-400 hover:bg-slate-800"><- 메인 홈페이지로</a>
-            <a href="#" class="block p-3 rounded transition bg-blue-600 mt-4">👥 투자자 CRM & 뉴스레터</a>
+            <a href="index.html" class="block p-3 rounded transition text-blue-400 hover:bg-slate-800"><i class="fas fa-home mr-2"></i>홈페이지로 돌아가기</a>
+            <div class="border-t border-slate-700 my-4"></div>
+            <a href="#" class="block p-3 rounded transition bg-blue-600 font-semibold"><i class="fas fa-database mr-2"></i>통합 대시보드</a>
         </nav>
     </aside>
 
     <main class="flex-1 overflow-y-auto p-8">
         <header class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">투자자 CRM 관리</h1>
+            <h1 class="text-3xl font-bold text-gray-800">통합 시스템 관리</h1>
         </header>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-upload mr-2 text-blue-500"></i> K-Fintech 기업 DB 관리
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="p-4 border rounded-lg hover:border-blue-400 cursor-pointer text-center bg-gray-50">
+                    <span class="block font-bold text-lg">핀테크 서비스</span>
+                    <button class="mt-3 bg-white border border-gray-300 text-xs px-3 py-1 rounded shadow-sm hover:bg-gray-100">DB 업로드</button>
+                </div>
+                <div class="p-4 border rounded-lg hover:border-green-400 cursor-pointer text-center bg-gray-50">
+                    <span class="block font-bold text-lg">보안/인증</span>
+                    <button class="mt-3 bg-white border border-gray-300 text-xs px-3 py-1 rounded shadow-sm hover:bg-gray-100">DB 업로드</button>
+                </div>
+                <div class="p-4 border rounded-lg hover:border-yellow-400 cursor-pointer text-center bg-gray-50">
+                    <span class="block font-bold text-lg">인프라/솔루션</span>
+                    <button class="mt-3 bg-white border border-gray-300 text-xs px-3 py-1 rounded shadow-sm hover:bg-gray-100">DB 업로드</button>
+                </div>
+                <div class="p-4 border rounded-lg hover:border-purple-400 cursor-pointer text-center bg-gray-50">
+                    <span class="block font-bold text-lg">블록체인/Web3</span>
+                    <button class="mt-3 bg-white border border-gray-300 text-xs px-3 py-1 rounded shadow-sm hover:bg-gray-100">DB 업로드</button>
+                </div>
+            </div>
+        </section>
 
         <section class="bg-white rounded-lg shadow-md p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold"><i class="fas fa-users mr-2 text-green-500"></i> 홈페이지에서 유입된 투자자 리스트</h2>
-                <button onclick="sendNewsletter()" class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
-                    선택 인원 뉴스레터 발송
+                <h2 class="text-xl font-semibold"><i class="fas fa-users mr-2 text-green-500"></i> 투자자 CRM (실시간 DB 연동)</h2>
+                <button onclick="sendNewsletter()" class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 font-semibold shadow">
+                    <i class="fas fa-paper-plane mr-1"></i> 선택 인원 뉴스레터 발송
                 </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-100">
-                            <th class="p-3 border-b"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
-                            <th class="p-3 border-b">이름</th>
-                            <th class="p-3 border-b">소속 기관</th>
-                            <th class="p-3 border-b">이메일</th>
-                            <th class="p-3 border-b">관심 분야</th>
-                            <th class="p-3 border-b">등록일</th>
+                            <th class="p-3 border-b w-10"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
+                            <th class="p-3 border-b nowrap">이름</th>
+                            <th class="p-3 border-b nowrap">소속 기관</th>
+                            <th class="p-3 border-b nowrap">이메일</th>
+                            <th class="p-3 border-b nowrap">문의 유형</th>
+                            <th class="p-3 border-b nowrap">가입일</th>
                         </tr>
                     </thead>
                     <tbody id="investor-list">
-                        </tbody>
+                        <tr><td colspan="6" class="p-8 text-center text-gray-500">데이터를 불러오는 중입니다...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 1. 홈페이지에서 저장한 데이터 불러오기
-        function loadInvestors() {
+        // 반드시 본인의 프로젝트 URL과 KEY로 변경하세요!
+        const supabaseUrl = 'https://kukeoddycuqtxmoctnoe.supabase.co';
+        const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Supabase DB에서 데이터 가져오기
+        async function loadInvestors() {
             const listElement = document.getElementById('investor-list');
-            const investors = JSON.parse(localStorage.getItem('investorDB')) || [];
             
-            if(investors.length === 0) {
-                listElement.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">아직 등록된 투자자가 없습니다. 메인 페이지에서 테스트해보세요.</td></tr>`;
+            // investor_inquiries 테이블에서 최신순으로 데이터 가져오기
+            const { data, error } = await supabase
+                .from('investor_inquiries')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("DB Fetch Error:", error);
+                listElement.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">데이터를 불러오는데 실패했습니다. URL과 KEY를 확인해주세요.</td></tr>`;
                 return;
             }
 
-            // 데이터를 테이블 행(tr)으로 변환
-            listElement.innerHTML = investors.map((inv, index) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 border-b"><input type="checkbox" class="investor-checkbox" value="${inv.email}"></td>
-                    <td class="p-3 border-b font-medium">${inv.name}</td>
-                    <td class="p-3 border-b">${inv.org}</td>
-                    <td class="p-3 border-b text-blue-500">${inv.email}</td>
-                    <td class="p-3 border-b"><span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${inv.interest}</span></td>
-                    <td class="p-3 border-b text-gray-600">${inv.date}</td>
+            if(data.length === 0) {
+                listElement.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500 bg-gray-50">아직 등록된 투자자가 없습니다.</td></tr>`;
+                return;
+            }
+
+            // DB에서 가져온 데이터를 HTML 표 형태로 만들기
+            listElement.innerHTML = data.map((inv) => {
+                // 날짜 예쁘게 자르기 (예: 2026-02-26)
+                const formattedDate = inv.created_at ? inv.created_at.split('T')[0] : '-';
+                
+                return `
+                <tr class="hover:bg-blue-50 transition border-b border-gray-100">
+                    <td class="p-3"><input type="checkbox" class="investor-checkbox" value="${inv.work_email}"></td>
+                    <td class="p-3 font-medium text-gray-800">${inv.full_name}</td>
+                    <td class="p-3 text-gray-600">${inv.organization}</td>
+                    <td class="p-3 text-blue-600 underline">${inv.work_email}</td>
+                    <td class="p-3"><span class="bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded">${inv.interest_area}</span></td>
+                    <td class="p-3 text-gray-500 text-sm">${formattedDate}</td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // 2. 전체 선택 기능
         function toggleAll(source) {
             const checkboxes = document.querySelectorAll('.investor-checkbox');
             checkboxes.forEach(cb => cb.checked = source.checked);
         }
 
-        // 3. 뉴스레터 발송 시뮬레이션
         function sendNewsletter() {
             const selected = document.querySelectorAll('.investor-checkbox:checked');
             if (selected.length === 0) {
-                alert('뉴스레터를 보낼 대상을 체크박스로 선택해주세요.');
+                alert('뉴스레터를 보낼 대상을 먼저 체크해주세요.');
                 return;
             }
-            alert(`${selected.length}명의 투자자에게 영문 리포트가 성공적으로 발송되었습니다! (시뮬레이션)`);
+            alert(`${selected.length}명의 투자자에게 뉴스레터 발송이 완료되었습니다! (시뮬레이션)`);
         }
 
-        // 페이지 로드 시 데이터 불러오기 실행
+        // 페이지가 열리면 자동으로 데이터 불러오기 함수 실행
         window.onload = loadInvestors;
     </script>
 </body>
