@@ -153,10 +153,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 반드시 본인의 프로젝트 URL과 KEY로 변경하세요!
+        // 변수명을 supabaseClient로 변경하여 충돌 완벽 방지!
         const supabaseUrl = 'https://kukeoddycuqtxmoctnoe.supabase.co';
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         document.getElementById('investorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -170,8 +170,8 @@
             const inputEmail = document.getElementById('email').value;
             const inputInterest = document.getElementById('interest').value;
 
-            // Supabase 데이터베이스에 데이터 넣기
-            const { data, error } = await supabase
+            // supabaseClient를 사용하여 DB에 저장
+            const { data, error } = await supabaseClient
                 .from('investor_inquiries')
                 .insert([
                     { full_name: inputName, organization: inputOrg, work_email: inputEmail, interest_area: inputInterest }

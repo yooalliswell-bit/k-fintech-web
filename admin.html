@@ -77,26 +77,27 @@
         </section>
     </main>
 
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 반드시 본인의 프로젝트 URL과 KEY로 변경하세요!
+        // 여기도 마찬가지로 supabaseClient로 이름 변경!
         const supabaseUrl = 'https://kukeoddycuqtxmoctnoe.supabase.co';
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Supabase DB에서 데이터 가져오기
         async function loadInvestors() {
             const listElement = document.getElementById('investor-list');
             
-            // investor_inquiries 테이블에서 최신순으로 데이터 가져오기
-            const { data, error } = await supabase
+            // supabaseClient를 사용하여 데이터 불러오기
+            const { data, error } = await supabaseClient
                 .from('investor_inquiries')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
                 console.error("DB Fetch Error:", error);
-                listElement.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">데이터를 불러오는데 실패했습니다. URL과 KEY를 확인해주세요.</td></tr>`;
+                listElement.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">데이터를 불러오는데 실패했습니다. URL과 KEY를 다시 확인해주세요.</td></tr>`;
                 return;
             }
 
@@ -105,11 +106,9 @@
                 return;
             }
 
-            // DB에서 가져온 데이터를 HTML 표 형태로 만들기
+            // DB 데이터를 HTML 표로 변환
             listElement.innerHTML = data.map((inv) => {
-                // 날짜 예쁘게 자르기 (예: 2026-02-26)
                 const formattedDate = inv.created_at ? inv.created_at.split('T')[0] : '-';
-                
                 return `
                 <tr class="hover:bg-blue-50 transition border-b border-gray-100">
                     <td class="p-3"><input type="checkbox" class="investor-checkbox" value="${inv.work_email}"></td>
@@ -137,7 +136,6 @@
             alert(`${selected.length}명의 투자자에게 뉴스레터 발송이 완료되었습니다! (시뮬레이션)`);
         }
 
-        // 페이지가 열리면 자동으로 데이터 불러오기 함수 실행
         window.onload = loadInvestors;
     </script>
 </body>
