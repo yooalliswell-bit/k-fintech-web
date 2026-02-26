@@ -92,7 +92,7 @@
                                 <th class="p-3 border-b w-10"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
                                 <th class="p-3 border-b nowrap">이름</th>
                                 <th class="p-3 border-b nowrap">소속 기관</th>
-                                <th class="p-3 border-b nowrap">이메일</th>
+                                <th class="p-3 border-b nowrap">지역</th> <th class="p-3 border-b nowrap">이메일</th>
                                 <th class="p-3 border-b nowrap">문의 유형</th>
                                 <th class="p-3 border-b nowrap">가입일</th>
                             </tr>
@@ -197,6 +197,7 @@
                     <td class="p-3"><input type="checkbox" class="investor-checkbox" value="${inv.work_email}"></td>
                     <td class="p-3 font-medium text-gray-800">${inv.full_name}</td>
                     <td class="p-3 text-gray-600">${inv.organization}</td>
+                    <td class="p-3 text-gray-800 font-semibold">${inv.region || '미지정'}</td>
                     <td class="p-3 text-blue-600 underline">${inv.work_email}</td>
                     <td class="p-3"><span class="bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded">${inv.interest_area}</span></td>
                     <td class="p-3 text-gray-500 text-sm">${formattedDate}</td>
