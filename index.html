@@ -84,14 +84,9 @@
                         </select>
                     </div>
                     <div>
-                        <label for="region" class="block text-sm font-medium text-slate-300 mb-2">Region</label>
-                        <select id="region" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
-                            <option value="North America">North America (북미)</option>
-                            <option value="Europe">Europe (유럽)</option>
-                            <option value="Asia">Asia (아시아)</option>
-                            <option value="Middle East">Middle East (중동)</option>
-                            <option value="Korea">Korea (국내)</option>
-                            <option value="Others">Others (기타)</option>
+                        <label for="country" class="block text-sm font-medium text-slate-300 mb-2">Country</label>
+                        <select id="country" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white">
+                            <option value="" disabled selected>국가를 선택해주세요 (Select Country)</option>
                         </select>
                     </div>
                 </div>
@@ -110,6 +105,36 @@
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        // 🌍 [추가된 코드] 외부 API에서 200여 개 국가 리스트를 실시간으로 읽어오는 함수
+        async function loadCountries() {
+            try {
+                // 전 세계 국가 정보를 제공하는 무료 공공 API 호출
+                const response = await fetch('https://restcountries.com/v3.1/all?fields=name');
+                const data = await response.json();
+                
+                // 가져온 데이터에서 영어 이름만 뽑아서 알파벳 순(A-Z)으로 예쁘게 정렬
+                const countries = data.map(c => c.name.common).sort();
+                
+                const selectElement = document.getElementById('country');
+                
+                // 정렬된 200여 개 국가를 select 박스에 차곡차곡 넣어줍니다.
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    selectElement.appendChild(option);
+                });
+            } catch (error) {
+                console.error('국가 목록을 불러오지 못했습니다:', error);
+                // 만약 인터넷 문제로 실패하면 기본값 하나만 넣어주는 센스!
+                document.getElementById('country').innerHTML = '<option value="United States">United States</option>';
+            }
+        }
+
+        // 🚀 홈페이지가 열리자마자 이 함수를 실행해서 목록을 채워넣습니다!
+        loadCountries();
+
+        
         document.getElementById('investorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -121,7 +146,7 @@
             const inputOrg = document.getElementById('orgName').value;
             const inputEmail = document.getElementById('email').value;
             const inputInterest = document.getElementById('interest').value;
-            const inputRegion = document.getElementById('region').value; // 지역 데이터 가져오기
+            const inputCountry = document.getElementById('country').value; // 지역 데이터 가져오기
 
             // Supabase 데이터베이스에 데이터 넣기 (region 포함)
             const { data, error } = await supabaseClient
@@ -132,7 +157,7 @@
                         organization: inputOrg, 
                         work_email: inputEmail, 
                         interest_area: inputInterest,
-                        region: inputRegion // 지역 데이터 추가
+                        region: inputCountry // 지역 데이터 추가
                     }
                 ]);
 
