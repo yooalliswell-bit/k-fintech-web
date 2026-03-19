@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Fintech Admin | CRM & Enterprise DB</title>
+    <title>K-Fintech Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -11,108 +11,132 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
-        .truncate-text { max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .fade-in { animation: fadeIn 0.4s ease-in-out; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        #regions_div { min-height: 400px; background: #f8fafc; border-radius: 1.5rem; }
-        .uncontacted-row { background-color: #fffafb; }
+        .nowrap { white-space: nowrap; } .company-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; background-color: #f8fafc; border: 1px solid #e2e8f0; }
+        .truncate-text { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }
+        .fade-in-section { animation: fadeIn 0.4s ease-in-out; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
+<body class="bg-gray-100 font-sans relative">
 
-    <div id="login-screen" class="flex items-center justify-center h-screen bg-slate-900 absolute inset-0 z-50">
-        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center">
-            <h2 class="text-2xl font-black text-white mb-6">Admin Login</h2>
-            <form id="loginForm" class="space-y-4 text-left">
-                <input type="email" id="adminEmail" placeholder="Email" required class="w-full bg-slate-700 border-none rounded-xl px-4 py-3 text-white">
-                <input type="password" id="adminPassword" placeholder="Password" required class="w-full bg-slate-700 border-none rounded-xl px-4 py-3 text-white">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl">접속하기</button>
-            </form>
-        </div>
-    </div>
+    <div id="login-screen" class="flex items-center justify-center h-screen bg-slate-900 absolute inset-0 z-50"><div class="bg-slate-800 p-10 rounded-3xl shadow-2xl border border-slate-700 w-full max-w-md text-white text-center"><i class="fas fa-user-shield text-6xl text-blue-500 mb-6"></i><h2 class="text-3xl font-extrabold mb-2">Admin Login</h2><form id="loginForm" class="space-y-5 text-left mt-8"><div><label class="block text-sm font-semibold text-slate-300 mb-1.5">Email</label><input type="email" id="adminEmail" required class="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-3.5 text-white"></div><div><label class="block text-sm font-semibold text-slate-300 mb-1.5">Password</label><input type="password" id="adminPassword" required class="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-3.5 text-white"></div><button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl">로그인</button></form></div></div>
 
-    <div id="dashboard-screen" class="hidden h-screen flex overflow-hidden">
-        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
-            <div class="p-6 text-xl font-black border-b border-slate-800 text-blue-500">K-Fintech Hub</div>
-            <nav class="flex-1 p-4 space-y-2">
-                <button onclick="switchView('investor')" id="nav-investor" class="w-full text-left p-3 rounded-xl bg-blue-600/20 text-blue-400 font-bold"><i class="fas fa-users mr-2"></i>투자자 CRM</button>
-                <button onclick="switchView('company')" id="nav-company" class="w-full text-left p-3 rounded-xl text-slate-400 hover:bg-slate-800 transition"><i class="fas fa-building mr-2"></i>기업 DB 관리</button>
-            </nav>
-            <div class="p-4 border-t border-slate-800"><button onclick="logoutAdmin()" class="text-red-400 text-sm font-bold"><i class="fas fa-power-off mr-2"></i>LOGOUT</button></div>
-        </aside>
+    <div id="dashboard-screen" class="hidden h-screen overflow-hidden flex-row">
+        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col border-r border-slate-800"><div class="p-6 text-2xl font-black border-b border-slate-800"><span class="text-blue-500 mr-1.5">K</span> Admin</div><nav class="flex-1 p-4 space-y-2"><a href="index.html" class="block p-3.5 rounded-xl transition text-slate-400 hover:bg-slate-800 hover:text-white"><i class="fas fa-home mr-2.5"></i>웹사이트 가기</a><div class="border-t border-slate-800 my-4"></div><button id="nav-investor" onclick="switchView('investor')" class="w-full text-left block p-3.5 rounded-xl bg-blue-600/10 text-blue-400 font-semibold"><i class="fas fa-users-cog mr-2.5"></i>투자자 CRM</button><button id="nav-company" onclick="switchView('company')" class="w-full text-left block p-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white"><i class="fas fa-building mr-2.5"></i>기업 DB 관리</button></nav><div class="p-4 border-t border-slate-800"><button onclick="logoutAdmin()" class="w-full flex items-center justify-center p-3 rounded-xl text-red-400 hover:bg-red-950/30"><i class="fas fa-sign-out-alt mr-2.5"></i>로그아웃</button></div></aside>
+        
+        <main class="flex-1 overflow-y-auto p-8 bg-slate-50 relative">
+            <header class="flex justify-between items-center mb-8 pb-6 border-b border-gray-200"><h1 id="page-title" class="text-4xl font-extrabold text-slate-950">투자자 CRM 관리</h1><div class="text-sm font-medium text-slate-500 bg-white px-4 py-2 rounded-full border border-gray-100">최고 관리자 <i class="fas fa-check-circle text-green-500 ml-1"></i></div></header>
 
-        <main class="flex-1 overflow-y-auto p-8">
-            <div id="view-investor" class="fade-in">
-                <header class="flex justify-between items-end mb-8">
-                    <div><h1 class="text-3xl font-black text-slate-900">글로벌 투자자 CRM</h1></div>
-                    <div id="total-investors" class="bg-white px-6 py-2 rounded-2xl shadow-sm border font-black text-blue-600">Total: 0</div>
-                </header>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-100">
-                        <div class="flex justify-between items-center mb-4"><span class="font-bold">국가별 분포</span>
-                        <select id="mapRegion" onchange="drawCharts(investorData)" class="text-xs border rounded-lg p-1">
-                            <option value="world">World</option><option value="142">Asia</option><option value="030">East Asia</option><option value="035">SE Asia</option>
-                        </select></div>
-                        <div id="regions_div"></div>
+            <div id="view-investor" class="fade-in-section">
+                <section class="bg-white rounded-3xl shadow-xl shadow-slate-100 p-8 mb-10 border border-gray-100">
+                    <div class="flex items-center justify-between mb-6"><h2 class="text-2xl font-bold text-slate-900 flex items-center"><i class="fas fa-globe-americas mr-3 text-blue-500"></i> 글로벌 투자자 트래픽</h2><select id="mapRegion" onchange="applyFilters()" class="bg-white border-2 border-slate-300 text-slate-700 text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 font-bold cursor-pointer"><option value="world">🗺️ 세계 지도</option><option value="142">🌏 아시아</option><option value="030">📍 동아시아</option><option value="035">📍 동남아시아</option><option value="150">🌍 유럽</option><option value="019">🌎 아메리카</option></select></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-2 border border-gray-100 rounded-2xl p-3 bg-slate-50 flex flex-col"><div id="regions_div" class="w-full h-[380px]"></div></div><div class="border border-gray-100 rounded-2xl p-6 bg-slate-50 flex flex-col"><h3 class="text-lg font-bold text-slate-900 mb-5 text-center">국가별 비중</h3><div id="piechart_div" class="w-full h-[320px]"></div></div></div>
+                </section>
+                <section class="bg-white rounded-3xl shadow-xl shadow-slate-100 p-8 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center"><i class="fas fa-users mr-3 text-blue-500"></i>투자자 DB 리스트<span id="total-investors" class="ml-3 text-lg font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full"></span></h2>
+                        <div class="flex space-x-3 items-center">
+                            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                            <button onclick="downloadCrmTemplate()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50"><i class="fas fa-file-alt mr-1.5"></i>예제 양식</button>
+                            <button onclick="downloadExcel()" class="bg-white border-2 border-blue-600 text-blue-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-50"><i class="fas fa-file-download mr-1.5"></i>다운로드</button>
+                            <button onclick="document.getElementById('excelFileInput').click()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-700"><i class="fas fa-file-upload mr-1.5"></i>업로드</button>
+                            <button onclick="openEmailModal()" class="bg-rose-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-rose-700 transition"><i class="fas fa-envelope mr-1.5"></i>메일 발송</button>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-3xl border border-slate-100"><div id="piechart_div" class="w-full h-[350px]"></div></div>
-                </div>
-
-                <section class="bg-white rounded-3xl shadow-sm border p-6 mb-6">
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end text-xs font-bold">
-                        <div>구분<select id="filterContactType" class="w-full mt-1 border rounded-lg p-2 bg-slate-50"><option value="">전체</option><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select></div>
-                        <div>미접촉 필터<select id="filterStatus" class="w-full mt-1 border-2 border-rose-200 rounded-lg p-2 bg-rose-50 text-rose-600"><option value="">전체</option><option value="uncontacted">🚩 미접촉자</option></select></div>
-                        <div>입력일 기간<div class="flex gap-1 mt-1"><input type="date" id="filterInStart" class="w-full border rounded p-1"><input type="date" id="filterInEnd" class="w-full border rounded p-1"></div></div>
-                        <div class="text-blue-600">접촉일 기간<div class="flex gap-1 mt-1"><input type="date" id="filterContactStart" class="w-full border border-blue-200 rounded p-1"><input type="date" id="filterContactEnd" class="w-full border border-blue-200 rounded p-1"></div></div>
-                        <button onclick="applyFilters()" class="bg-slate-900 text-white py-2.5 rounded-xl">조회</button>
-                        <button onclick="resetFilters()" class="bg-slate-100 text-slate-400 py-2.5 rounded-xl"><i class="fas fa-undo"></i></button>
+                    <div class="bg-slate-50 p-5 rounded-2xl mb-6 border border-slate-200 flex flex-wrap gap-4 items-end shadow-sm">
+                        <div><label class="block text-xs font-bold text-slate-500 mb-1">국가</label><select id="filterCountry" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm w-32"><option value="">전체 국가</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1">문의 유형</label><select id="filterType" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm w-32"><option value="">전체 유형</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1">입력일(시작)</label><input type="date" id="filterStartDate" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm"></div><div><label class="block text-xs font-bold text-slate-500 mb-1">입력일(종료)</label><input type="date" id="filterEndDate" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm"></div>
+                        <div class="flex space-x-2 ml-auto"><button onclick="applyFilters()" class="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-blue-700"><i class="fas fa-search mr-1.5"></i>조회</button><button onclick="resetFilters()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded-lg text-sm font-bold hover:bg-slate-50"><i class="fas fa-redo mr-1.5"></i>초기화</button></div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead><tr class="bg-gray-100 text-slate-600 font-semibold border-y border-slate-200"><th class="p-4 w-10"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th><th class="p-4 nowrap sortable-header" onclick="sortInvestors('full_name')">이름 <i class="fas fa-sort ml-1"></i></th><th class="p-4 nowrap sortable-header" onclick="sortInvestors('organization')">소속 기관 <i class="fas fa-sort ml-1"></i></th><th class="p-4 nowrap sortable-header" onclick="sortInvestors('region')">국가 <i class="fas fa-sort ml-1"></i></th><th class="p-4 nowrap">이메일/전화</th><th class="p-4 nowrap sortable-header" onclick="sortInvestors('interest_area')">문의유형 <i class="fas fa-sort ml-1"></i></th><th class="p-4 nowrap text-blue-600">접수메시지</th><th class="p-4 nowrap">관리자비고</th><th class="p-4 nowrap text-blue-700">접촉일</th><th class="p-4 nowrap text-slate-500">입력일</th><th class="p-4 text-center">관리</th></tr></thead>
+                            <tbody id="investor-list" class="divide-y divide-gray-100 text-slate-700"><tr><td colspan="11" class="p-10 text-center">데이터 로딩중...</td></tr></tbody>
+                        </table>
                     </div>
                 </section>
-
-                <div class="bg-white rounded-3xl shadow-xl border overflow-hidden">
-                    <table class="w-full text-left text-sm border-collapse">
-                        <thead><tr class="bg-slate-900 text-slate-400 font-bold border-b text-[10px] uppercase"><th class="p-4 text-center">No</th><th class="p-4">Name (Type)</th><th class="p-4">Org</th><th class="p-4">Region</th><th class="p-4 text-center">Created At</th><th class="p-4 text-center text-blue-500">Contact Date</th><th class="p-4 text-center">Edit</th></tr></thead>
-                        <tbody id="investor-list" class="divide-y divide-slate-50"></tbody>
-                    </table>
-                </div>
             </div>
 
-            <div id="view-company" class="hidden fade-in">
-                <header class="flex justify-between items-center mb-8">
-                    <h1 class="text-3xl font-black text-slate-900">기업 DB 관리</h1>
-                    <div id="total-companies" class="bg-white px-6 py-2 rounded-2xl shadow-sm border font-black text-indigo-600">Total: 0</div>
-                </header>
-                <section class="bg-slate-900 rounded-3xl p-6 mb-8 text-white flex justify-between items-center">
-                    <div><h2 class="font-bold">프론트엔드 자동 롤링 설정</h2><p class="text-xs text-slate-400">메인 사이트 정렬 기준</p></div>
-                    <div class="flex gap-3">
-                        <select id="frontendSortSelect" class="bg-slate-800 border-none rounded-lg px-4 py-2 text-sm">
-                            <option value="created_at">최신순</option><option value="revenue">매출순</option><option value="funding">투자순</option>
-                        </select>
-                        <button onclick="saveDisplaySetting()" class="bg-indigo-600 px-5 py-2 rounded-lg text-sm font-bold">적용</button>
+            <div id="view-company" class="hidden fade-in-section">
+                <section class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl shadow-lg p-6 mb-8 text-white flex justify-between items-center border border-slate-700"><div><h2 class="text-xl font-bold flex items-center mb-1"><i class="fas fa-tv text-indigo-400 mr-2"></i> 프론트엔드 자동 롤링 설정</h2><p class="text-sm text-slate-400">웹사이트에 노출할 정렬 기준을 선택하세요.</p></div><div class="flex items-center gap-3"><select id="frontendSortSelect" class="bg-slate-900 border border-slate-600 text-white rounded-lg px-4 py-2.5 text-sm font-bold focus:outline-none cursor-pointer"><option value="created_at">⏰ 입력일순 (최신순)</option><option value="revenue">💰 매출액 높은순</option><option value="funding">📈 누적투자액 높은순</option></select><button onclick="saveDisplaySetting()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg">적용하기</button></div></section>
+
+                <section class="bg-white rounded-3xl shadow-xl shadow-slate-100 p-8 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center"><i class="fas fa-building mr-3 text-indigo-500"></i> 기업 DB 관리<span id="total-companies" class="ml-3 text-lg font-extrabold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">총 0개</span></h2>
+                        <div class="flex space-x-3 items-center">
+                            <input type="file" id="compExcelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleCompanyExcelUpload(event)"><button onclick="downloadCompanyTemplate()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50"><i class="fas fa-file-alt mr-1.5"></i>예제양식</button><button onclick="downloadCompanyExcel()" class="bg-white border-2 border-indigo-600 text-indigo-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-50"><i class="fas fa-file-download mr-1.5"></i>다운로드</button><button onclick="document.getElementById('compExcelFileInput').click()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-700"><i class="fas fa-file-upload mr-1.5"></i>업로드</button><button onclick="openCompanyModal()" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-700"><i class="fas fa-plus mr-1.5"></i>신규등록</button>
+                        </div>
                     </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl mb-6 border border-slate-200 flex flex-wrap gap-4 items-end shadow-sm">
+                        <div><label class="block text-xs font-bold text-slate-500 mb-1">회사명</label><input type="text" id="filterCompName" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm w-32"></div><div><label class="block text-xs font-bold text-slate-500 mb-1">분야</label><select id="filterCompCategory" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm"><option value="">전체 분야</option><option value="Exchange">Exchange</option><option value="Investment">Investment</option><option value="Security & Authentication">Security</option><option value="Payment">Payment</option><option value="InsurTech">InsurTech</option><option value="Wealth Management">Wealth Mgmt</option><option value="Crowdfunding">Crowdfunding</option><option value="Fintech SI">Fintech SI</option><option value="Cross-border Remittance">Cross-border</option><option value="Others">Others</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1">투자단계</label><select id="filterCompStage" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm w-32"><option value="">전체 단계</option><option value="Seed">Seed</option><option value="Pre-A">Pre-A</option><option value="Series A">Series A</option><option value="Series B">Series B</option><option value="Series C+">Series C+</option><option value="IPO">IPO</option><option value="M&A">M&A</option><option value="Undisclosed">Undisclosed</option></select></div>
+                        <div class="flex space-x-2 ml-auto"><button onclick="applyCompanyFilters()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700"><i class="fas fa-search mr-1.5"></i>조회</button><button onclick="resetCompanyFilters()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded-lg text-sm font-bold hover:bg-slate-50"><i class="fas fa-redo mr-1.5"></i>초기화</button></div>
+                    </div>
+                    <div class="overflow-x-auto"><table class="w-full text-left text-sm border-collapse"><thead><tr class="bg-gray-100 text-slate-600 font-semibold border-y border-slate-200"><th class="p-4 w-48">Company</th><th class="p-4">CEO</th><th class="p-4">Category</th><th class="p-4">Stage</th><th class="p-4">Funding</th><th class="p-4 text-emerald-600">Revenue</th><th class="p-4 text-red-600">Badge</th><th class="p-4">Media</th><th class="p-4 text-center">관리</th></tr></thead><tbody id="company-list" class="divide-y divide-gray-100 text-slate-700"><tr><td colspan="9" class="p-10 text-center text-slate-500">데이터 로딩중...</td></tr></tbody></table></div>
                 </section>
-                <div class="bg-white rounded-3xl shadow-xl border overflow-hidden">
-                    <table class="w-full text-left text-sm border-collapse">
-                        <thead><tr class="bg-slate-50 text-slate-500 font-bold border-b text-[10px] uppercase"><th class="p-4">Company</th><th class="p-4">CEO</th><th class="p-4">Category</th><th class="p-4">Funding</th><th class="p-4 text-emerald-600">Revenue</th><th class="p-4 text-center">Action</th></tr></thead>
-                        <tbody id="company-list" class="divide-y divide-slate-50"></tbody>
-                    </table>
-                </div>
             </div>
         </main>
     </div>
 
-    <div id="editModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden">
-            <div class="px-6 py-4 bg-slate-50 border-b flex justify-between items-center font-bold"><h3>기록 수정</h3><button onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
+    <div id="editModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200">
+            <div class="bg-slate-50 px-6 py-4 border-b flex justify-between items-center"><h3 class="text-xl font-bold">투자자 상세 수정</h3><button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button></div>
             <form id="editForm" class="p-6 space-y-4" onsubmit="submitEditForm(event)">
-                <div class="grid grid-cols-2 gap-4">
-                    <select id="editContactType" class="border rounded-xl p-3 text-sm"><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select>
-                    <input type="text" id="editName" class="border rounded-xl p-3 text-sm">
-                </div>
-                <input type="date" id="editContactDate" class="w-full border rounded-xl p-3 text-sm bg-blue-50">
-                <textarea id="editRemarks" rows="3" class="w-full border rounded-xl p-3 text-sm"></textarea>
-                <div class="flex gap-2"><button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl">취소</button><button type="submit" class="flex-[2] py-3 bg-blue-600 text-white rounded-xl font-bold">저장</button></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold mb-1">이름</label><input type="text" id="editName" class="w-full border rounded-lg px-3 py-2"></div><div><label class="block text-sm font-semibold mb-1">소속 기관</label><input type="text" id="editOrg" class="w-full border rounded-lg px-3 py-2"></div></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold mb-1">국가</label><select id="editRegion" class="w-full border rounded-lg px-3 py-2 bg-white"></select></div><div><label class="block text-sm font-semibold mb-1">이메일</label><input type="email" id="editEmail" class="w-full border rounded-lg px-3 py-2"></div></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold mb-1">전화번호</label><input type="text" id="editPhone" class="w-full border rounded-lg px-3 py-2"></div><div><label class="block text-sm font-semibold mb-1">문의 유형</label><select id="editInterestArea" class="w-full border rounded-lg px-3 py-2 bg-white"><option value="Meeting">Meeting</option><option value="IR">IR</option><option value="Match">Match</option><option value="General">General</option></select></div></div>
+                <div><label class="block text-sm font-semibold mb-1 text-blue-600">최근 접촉일자</label><input type="date" id="editContactDate" class="w-full border border-blue-300 bg-blue-50/30 rounded-lg px-3 py-2"></div>
+                <div><label class="block text-sm font-semibold mb-1 text-blue-700">투자자 접수 메시지 (원문)</label><textarea id="editMessage" rows="2" class="w-full border rounded-lg px-3 py-2 bg-slate-50"></textarea></div>
+                <div><label class="block text-sm font-semibold mb-1">관리자 비고</label><textarea id="editRemarks" rows="2" class="w-full border rounded-lg px-3 py-2"></textarea></div>
+                <div class="flex justify-between items-center pt-4 border-t"><div class="text-sm text-slate-500">최초 입력일: <span id="editDateDisplay" class="font-bold"></span></div><div class="flex space-x-3"><button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-lg bg-slate-100 font-semibold">취소</button><button type="submit" id="saveEditBtn" class="px-5 py-2.5 rounded-lg text-white bg-blue-600 font-bold">저장하기</button></div></div>
             </form>
+        </div>
+    </div>
+
+    <div id="companyModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-slate-200">
+            <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center sticky top-0 z-10"><h3 class="text-xl font-bold text-slate-800" id="companyModalTitle"><i class="fas fa-building text-indigo-500 mr-2"></i>Fintech DB 등록</h3><button onclick="closeCompanyModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button></div>
+            <form id="companyForm" class="p-6 space-y-4" onsubmit="submitCompanyForm(event)">
+                <input type="hidden" id="compId">
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold text-slate-600 mb-1">회사명 *</label><input type="text" id="compName" required class="w-full border border-slate-300 rounded-lg px-3 py-2"></div><div><label class="block text-sm font-semibold text-slate-600 mb-1">대표자</label><input type="text" id="compCeo" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold text-slate-600 mb-1">분야 *</label><select id="compCategory" required class="w-full border border-slate-300 rounded-lg px-3 py-2"><option value="Exchange">Exchange</option><option value="Investment">Investment</option><option value="Security & Authentication">Security</option><option value="Payment">Payment</option><option value="InsurTech">InsurTech</option><option value="Wealth Management">Wealth Mgmt</option><option value="Crowdfunding">Crowdfunding</option><option value="Fintech SI">Fintech SI</option><option value="Cross-border Remittance">Cross-border</option><option value="Others">Others</option></select></div><div><label class="block text-sm font-semibold text-slate-600 mb-1">설립일</label><input type="text" id="compFounded" placeholder="ex. 2021-05" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div></div>
+                <div class="grid grid-cols-3 gap-4"><div><label class="block text-sm font-semibold text-slate-600 mb-1">투자단계</label><select id="compStage" class="w-full border border-slate-300 rounded-lg px-3 py-2"><option value="">선택</option><option value="Seed">Seed</option><option value="Pre-A">Pre-A</option><option value="Series A">Series A</option><option value="Series B">Series B</option><option value="Series C+">Series C+</option><option value="IPO">IPO</option><option value="M&A">M&A</option><option value="Undisclosed">Undisclosed</option></select></div><div><label class="block text-sm font-semibold text-slate-600 mb-1">누적투자액</label><input type="text" id="compAmount" placeholder="ex. $5M" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div><div><label class="block text-sm font-bold text-emerald-600 mb-1">매출액</label><input type="text" id="compRevenue" placeholder="ex. $10M" class="w-full border border-emerald-300 bg-emerald-50/30 rounded-lg px-3 py-2 outline-none"></div></div>
+                <div class="p-3 bg-red-50 border border-red-200 rounded-xl"><label class="block text-sm font-bold text-red-600 mb-1"><i class="fas fa-medal mr-1"></i> 인증 / 수상 뱃지 텍스트 (예: Fintech 30 S1)</label><input type="text" id="compBadge" placeholder="표시할 텍스트를 입력하세요" class="w-full border border-red-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold text-slate-600 mb-1">홈페이지 URL</label><input type="url" id="compWebsite" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div><div><label class="block text-sm font-semibold text-slate-600 mb-1">로고 URL</label><input type="text" id="compLogoUrl" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">핵심 키워드</label><input type="text" id="compKeywords" class="w-full border border-slate-300 rounded-lg px-3 py-2"></div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl"><label class="block text-sm font-bold text-slate-700 mb-1"><i class="fas fa-file-pdf text-red-500 mr-1"></i> IR Deck (URL 입력 또는 PDF 첨부)</label><div class="flex gap-2"><input type="url" id="compIrDeck" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm"><label class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer"><i class="fas fa-upload"></i> 선택<input type="file" id="fileIrDeck" accept=".pdf" class="hidden" onchange="uploadFileToSupabase('fileIrDeck', 'compIrDeck', 'pdf')"></label></div></div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl"><label class="block text-sm font-bold text-slate-700 mb-1"><i class="fas fa-video text-rose-500 mr-1"></i> 홍보 영상 (URL 입력 또는 MP4 첨부)</label><div class="flex gap-2"><input type="url" id="compVideoUrl" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm"><label class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer"><i class="fas fa-upload"></i> 선택<input type="file" id="fileVideo" accept="video/mp4" class="hidden" onchange="uploadFileToSupabase('fileVideo', 'compVideoUrl', 'video')"></label></div></div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100"><button type="button" onclick="closeCompanyModal()" class="px-5 py-2.5 rounded-lg text-slate-600 bg-slate-100 font-semibold hover:bg-slate-200">취소</button><button type="submit" id="saveCompanyBtn" class="px-5 py-2.5 rounded-lg text-white bg-indigo-600 font-bold hover:bg-indigo-700 shadow-md">저장하기</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="emailModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200">
+            <div class="bg-slate-50 px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-xl font-bold"><i class="fas fa-paper-plane text-rose-500 mr-2"></i>투자자 개별 메일 발송</h3>
+                <button onclick="closeEmailModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-rose-50 text-rose-700 p-3 rounded-lg text-sm font-bold border border-rose-200">
+                    <i class="fas fa-users mr-1"></i> 발송 대상: 총 <span id="emailTargetCount" class="text-lg font-black">0</span> 명 (각각 개별 전송)
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">제목</label>
+                    <input type="text" id="emailSubject" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-rose-500" placeholder="메일 제목을 입력하세요">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">내용 (줄바꿈 가능)</label>
+                    <textarea id="emailBody" rows="6" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:border-rose-500" placeholder="투자자에게 보낼 메일 내용을 입력하세요."></textarea>
+                </div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                    <label class="block text-sm font-bold text-slate-700 mb-1"><i class="fas fa-paperclip mr-1 text-slate-500"></i> 파일 첨부 (선택 사항)</label>
+                    <input type="file" id="emailAttachment" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+                    <p class="text-[11px] text-slate-400 mt-1 font-semibold">* 5MB 이하의 PDF 문서나 이미지를 권장합니다. (대용량 발송 시 스팸으로 분류될 수 있습니다.)</p>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeEmailModal()" class="px-5 py-2.5 rounded-lg bg-slate-100 font-semibold text-slate-700">취소</button>
+                    <button type="button" onclick="sendEmailToGoogle()" id="sendEmailBtn" class="px-5 py-2.5 rounded-lg text-white bg-rose-600 font-bold hover:bg-rose-700 shadow-md transition">발송하기</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -122,124 +146,189 @@
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let investorData = []; let companyData = []; let currentEditId = null;
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyicf9-dvToViOZjsenQd37H9gJdcdxOxJ5Vh07oj-esSzkZtfNSG90foBFUxT8YzMr/exec';
+
+        const colorPalette = [
+            '#FF6F61', '#6B5B95', '#88B04B', '#92A8D1', '#FFB74D', 
+            '#009688', '#D32F2F', '#7B1FA2', '#3B82F6', '#10B981', 
+            '#F59E0B', '#EF4444', '#8B5CF6', '#14B8A6', '#F97316', 
+            '#6366F1', '#EC4899', '#06B6D4', '#84CC16', '#A855F7',
+            '#EAB308', '#22C55E', '#3B82F6', '#F43F5E'
+        ];
+
+        let investorData = []; let currentFilteredData = []; let companyData = []; let currentFilteredCompanyData = []; let currentEditId = null; 
+        let invSortCol = 'created_at'; let invSortAsc = false;
+
+        const globalCountries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
+
         google.charts.load('current', { 'packages': ['geochart', 'corechart'] });
 
-        async function checkSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) showDashboard(); else document.getElementById('login-screen').classList.remove('hidden');
+        async function checkSession() { const { data: { session } } = await supabaseClient.auth.getSession(); if (session) { document.getElementById('editRegion').innerHTML = globalCountries.map(c => `<option value="${c}">${c}</option>`).join(''); showDashboard(); } else { document.getElementById('login-screen').classList.remove('hidden'); } }
+        document.getElementById('loginForm').addEventListener('submit', async function(e) { e.preventDefault(); const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('adminEmail').value, password: document.getElementById('adminPassword').value }); if (error) alert('로그인 실패'); else { document.getElementById('editRegion').innerHTML = globalCountries.map(c => `<option value="${c}">${c}</option>`).join(''); showDashboard(); } });
+        async function logoutAdmin() { await supabaseClient.auth.signOut(); window.location.reload(); }
+        function showDashboard() { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('dashboard-screen').classList.remove('hidden'); document.getElementById('dashboard-screen').classList.add('flex'); loadInvestors(); loadCompanies(); }
+        function switchView(v) { document.getElementById('view-investor').classList.toggle('hidden', v !== 'investor'); document.getElementById('view-company').classList.toggle('hidden', v !== 'company'); }
+
+        function openEmailModal() {
+            const checkboxes = document.querySelectorAll('.investor-checkbox:checked');
+            const emails = Array.from(checkboxes).map(cb => cb.value).filter(e => e && e.includes('@')); 
+            
+            if (emails.length === 0) { alert('메일을 발송할 투자자를 먼저 체크박스로 1명 이상 선택해주세요!'); return; }
+            document.getElementById('emailTargetCount').innerText = emails.length;
+            document.getElementById('emailSubject').value = '';
+            document.getElementById('emailBody').value = '';
+            document.getElementById('emailAttachment').value = '';
+            document.getElementById('emailModal').classList.remove('hidden');
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('adminEmail').value, password: document.getElementById('adminPassword').value });
-            if (error) alert('로그인 실패'); else showDashboard();
-        });
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.add('hidden');
+        }
 
-        function showDashboard() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('dashboard-screen').classList.remove('hidden');
-            loadInvestors(); loadCompanies();
+        async function sendEmailToGoogle() {
+            if(GAS_URL === 'https://script.google.com/macros/s/AKfycbymE4Sxx0kPGtUJNcl3kyhtWP3vcr9a6WshLJtAy814MdyA2fwySj39m4_cstIhdopA/exec') { alert('구글 앱스 스크립트(GAS) URL이 설정되지 않았습니다. 코드를 확인해주세요!'); return; }
+
+            const subject = document.getElementById('emailSubject').value;
+            const body = document.getElementById('emailBody').value;
+            if(!subject || !body) { alert('제목과 내용을 모두 입력해주세요.'); return; }
+
+            const checkboxes = document.querySelectorAll('.investor-checkbox:checked');
+            const emails = Array.from(checkboxes).map(cb => cb.value).filter(e => e && e.includes('@'));
+            
+            const fileInput = document.getElementById('emailAttachment');
+            const btn = document.getElementById('sendEmailBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>발송 준비 중...';
+            btn.disabled = true;
+
+            const sendRequest = async (attachObj) => {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>전송 중...';
+                try {
+                    const payload = { emails: emails, subject: subject, body: body };
+                    if (attachObj) payload.attachment = attachObj;
+
+                    await fetch(GAS_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    alert(emails.length + '명의 투자자에게 개별 메일 발송을 완료했습니다!');
+                    closeEmailModal();
+                    document.querySelectorAll('.investor-checkbox:checked').forEach(cb => cb.checked = false);
+                    document.getElementById('selectAll').checked = false;
+                } catch (error) {
+                    console.error(error);
+                    alert('메일 발송 중 오류가 발생했습니다. 구글 앱스 스크립트 설정을 확인해주세요.');
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            };
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.size > 5 * 1024 * 1024) { 
+                    alert('첨부파일의 용량이 너무 큽니다! 5MB 이하의 파일만 권장합니다.\n\n(※ 팁: 큰 파일은 구글 서버에서 전송이 막히거나 스팸으로 분류될 확률이 높습니다.)');
+                    btn.innerHTML = originalText; btn.disabled = false;
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Str = e.target.result.split('base64,')[1];
+                    sendRequest({
+                        filename: file.name,
+                        mimeType: file.type,
+                        base64Data: base64Str
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                sendRequest(null);
+            }
         }
 
         async function loadInvestors() {
-            const { data } = await supabaseClient.from('investor_inquiries').select('*').order('created_at', { ascending: false });
-            investorData = data || [];
-            renderTable(investorData);
-            google.charts.setOnLoadCallback(() => drawCharts(investorData));
+            const listElement = document.getElementById('investor-list'); 
+            const { data, error } = await supabaseClient.from('investor_inquiries').select('*').order('created_at', { ascending: false }); 
+            if (error) return; investorData = data || []; currentFilteredData = data || []; populateFilterOptions(data || []); 
+            if(data.length === 0) { listElement.innerHTML = `<tr><td colspan="11" class="p-10 text-center">데이터가 없습니다</td></tr>`; return; } 
+            updateViewWithData(investorData); 
         }
+        
+        function updateViewWithData(dataArray) { document.getElementById('total-investors').innerText = `총 ${dataArray.length}명`; renderTable(dataArray); const countryCounts = {}; dataArray.forEach(inv => { const c = inv.region; if (c && c !== 'Others') { countryCounts[c] = (countryCounts[c] || 0) + 1; }}); if(Object.keys(countryCounts).length > 0 && document.getElementById('view-investor').classList.contains('hidden') === false) { drawDashboard(countryCounts); } }
+        
+        function renderTable(dataArray) {
+            const listElement = document.getElementById('investor-list');
+            if(dataArray.length === 0) { listElement.innerHTML = `<tr><td colspan="11" class="p-10 text-center">검색 결과 없음</td></tr>`; return; }
+            
+            const today = new Date(); 
+            
+            listElement.innerHTML = dataArray.map((inv) => {
+                const formattedDate = inv.created_at ? inv.created_at.split('T')[0] : '-';
+                const index = Object.keys(investorData.reduce((acc, obj) => ({...acc, [obj.region]: 1}), {})).indexOf(inv.region);
+                const countryColor = colorPalette[index % colorPalette.length] || '#475569';
+                
+                const createdDate = new Date(inv.created_at || Date.now());
+                const diffDays = Math.ceil(Math.abs(today - createdDate) / (1000 * 60 * 60 * 24)); 
+                const isUncontacted = !inv.contact_date || inv.contact_date.trim() === '' || inv.contact_date === '-';
+                const isNew = (diffDays <= 3) && isUncontacted;
+                
+                const newBadge = isNew ? `<span class="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded ml-2 animate-pulse shadow-sm">NEW</span>` : '';
+                const contactHtml = isUncontacted 
+                    ? `<span class="text-red-500 font-bold text-xs bg-red-50 px-2 py-1 rounded border border-red-100">미접촉</span>` 
+                    : `<span class="text-blue-600 font-semibold text-xs">${inv.contact_date}</span>`;
 
-        function renderTable(arr) {
-            document.getElementById('total-investors').innerText = `Total: ${arr.length}`;
-            document.getElementById('investor-list').innerHTML = arr.map((inv, idx) => {
-                const inDate = inv.created_at ? inv.created_at.split('T')[0] : '-';
-                const hasC = inv.contact_date && inv.contact_date.trim() !== '';
-                const cDate = hasC ? inv.contact_date : `<span class="bg-rose-500 text-white px-2 py-0.5 rounded text-[10px] font-black animate-pulse">미접촉</span>`;
-                return `<tr class="${!hasC ? 'uncontacted-row':''} hover:bg-slate-50 text-xs border-b">
-                    <td class="p-4 text-center text-slate-300 font-mono">${idx+1}</td>
-                    <td class="p-4 font-bold"><span class="px-1.5 py-0.5 rounded mr-2 uppercase text-[9px] bg-slate-100">${inv.contact_type || 'Investor'}</span>${inv.full_name}</td>
+                const msgText = inv.message || '-'; const remarksText = inv.remarks || '-';
+                
+                return `
+                <tr class="hover:bg-blue-50/50 bg-white border-b transition">
+                    <td class="p-4"><input type="checkbox" class="investor-checkbox w-4 h-4 accent-rose-600" value="${inv.work_email}"></td>
+                    <td class="p-4 font-semibold text-slate-800">${inv.full_name}${newBadge}</td>
                     <td class="p-4">${inv.organization}</td>
-                    <td class="p-4 font-bold text-indigo-500">${inv.region || '-'}</td>
-                    <td class="p-4 text-center">${inDate}</td>
-                    <td class="p-4 text-center font-black">${cDate}</td>
-                    <td class="p-4 text-center"><button onclick="openEditModal('${inv.id}')" class="text-blue-500"><i class="fas fa-edit"></i></button></td>
+                    <td class="p-4"><span style="background-color: ${countryColor}20; color: ${countryColor};" class="font-bold px-3 py-1.5 rounded-lg text-xs">${inv.region || '미지정'}</span></td>
+                    <td class="p-4 text-xs">${inv.work_email}<br><span class="text-slate-400">${inv.phone || ''}</span></td>
+                    <td class="p-4"><span class="bg-gray-100 text-xs font-bold px-2.5 py-1.5 rounded-full">${inv.interest_area}</span></td>
+                    <td class="p-4 text-blue-600 text-xs truncate-text" title="${msgText}">${msgText}</td>
+                    <td class="p-4 text-slate-500 text-xs truncate-text" title="${remarksText}">${remarksText}</td>
+                    <td class="p-4">${contactHtml}</td>
+                    <td class="p-4 text-slate-500 text-xs">${formattedDate}</td>
+                    <td class="p-4 text-center"><button onclick="openEditModal('${inv.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded"><i class="fas fa-edit"></i></button></td>
                 </tr>`;
             }).join('');
         }
+        
+        function sortInvestors(col) { if (invSortCol === col) invSortAsc = !invSortAsc; else { invSortCol = col; invSortAsc = true; } currentFilteredData.sort((a, b) => { let valA = a[col] ? String(a[col]).toLowerCase() : ''; let valB = b[col] ? String(b[col]).toLowerCase() : ''; if (valA < valB) return invSortAsc ? -1 : 1; if (valA > valB) return invSortAsc ? 1 : -1; return 0; }); renderTable(currentFilteredData); }
+        function populateFilterOptions(data) { const countries = [...new Set(data.map(item => item.region).filter(Boolean))].sort(); const types = [...new Set(data.map(item => item.interest_area).filter(Boolean))].sort(); document.getElementById('filterCountry').innerHTML = '<option value="">전체 국가</option>' + countries.map(c => `<option value="${c}">${c}</option>`).join(''); document.getElementById('filterType').innerHTML = '<option value="">전체 유형</option>' + types.map(t => `<option value="${t}">${t}</option>`).join(''); }
+        function applyFilters() { const country = document.getElementById('filterCountry').value; const type = document.getElementById('filterType').value; const startDate = document.getElementById('filterStartDate').value; const endDate = document.getElementById('filterEndDate').value; let filtered = investorData; if (country) filtered = filtered.filter(inv => inv.region === country); if (type) filtered = filtered.filter(inv => inv.interest_area === type); if (startDate) filtered = filtered.filter(inv => inv.created_at && inv.created_at.split('T')[0] >= startDate); if (endDate) filtered = filtered.filter(inv => inv.created_at && inv.created_at.split('T')[0] <= endDate); currentFilteredData = filtered; updateViewWithData(filtered); }
+        function resetFilters() { document.getElementById('filterCountry').value = ''; document.getElementById('filterType').value = ''; document.getElementById('filterStartDate').value = ''; document.getElementById('filterEndDate').value = ''; document.getElementById('mapRegion').value = 'world'; currentFilteredData = investorData; updateViewWithData(investorData); }
+        function drawDashboard(counts) { var pieDataTable = [['Country', 'Investors Count']]; var mapDataTable = [['Country', 'Investors Count']]; const syncedColors = []; const colorValues = []; let index = 0; for (const [country, count] of Object.entries(counts)) { let originalIndex = Object.keys(investorData.reduce((acc, obj) => ({...acc, [obj.region]: 1}), {})).indexOf(country); if(originalIndex === -1) originalIndex = index; syncedColors.push(colorPalette[originalIndex % colorPalette.length]); colorValues.push(index); pieDataTable.push([country, count]); mapDataTable.push([country, { v: index, f: count + '명' }]); index++; } var pieData = google.visualization.arrayToDataTable(pieDataTable); var mapData = google.visualization.arrayToDataTable(mapDataTable); var mapOptions = { displayMode: 'regions', region: document.getElementById('mapRegion').value, colorAxis: { values: colorValues, colors: syncedColors }, backgroundColor: '#f8fafc', datalessRegionColor: '#e2e8f0', defaultColor: '#f1f5f9', legend: 'none' }; var map = new google.visualization.GeoChart(document.getElementById('regions_div')); google.visualization.events.addListener(map, 'select', function() { const selection = map.getSelection(); if (selection.length > 0) { document.getElementById('filterCountry').value = mapData.getValue(selection[0].row, 0); applyFilters(); } else { document.getElementById('filterCountry').value = ''; applyFilters(); } }); map.draw(mapData, mapOptions); var pieOptions = { pieHole: 0.45, backgroundColor: 'transparent', chartArea: { width: '90%', height: '80%' }, legend: { position: 'right', textStyle: { fontSize: 13, bold: true, color: '#475569' } }, pieSliceTextStyle: { color: 'white', bold: true, fontSize: 13 }, colors: syncedColors }; var pie = new google.visualization.PieChart(document.getElementById('piechart_div')); pie.draw(pieData, pieOptions); }
+        
+        function openEditModal(id) { const inv = investorData.find(item => String(item.id) === String(id)); if(!inv) return; currentEditId = id; document.getElementById('editName').value = inv.full_name || ''; document.getElementById('editOrg').value = inv.organization || ''; document.getElementById('editRegion').value = inv.region || 'Others'; document.getElementById('editEmail').value = inv.work_email || ''; document.getElementById('editPhone').value = inv.phone || ''; document.getElementById('editInterestArea').value = inv.interest_area || 'General'; document.getElementById('editContactDate').value = inv.contact_date || ''; document.getElementById('editMessage').value = inv.message || ''; document.getElementById('editRemarks').value = inv.remarks || ''; document.getElementById('editDateDisplay').innerText = inv.created_at ? inv.created_at.split('T')[0] : '-'; document.getElementById('editModal').classList.remove('hidden'); }
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; }
+        async function submitEditForm(e) { e.preventDefault(); const btn = document.getElementById('saveEditBtn'); btn.innerText = '저장 중...'; const updates = { full_name: document.getElementById('editName').value, organization: document.getElementById('editOrg').value, region: document.getElementById('editRegion').value, work_email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value, interest_area: document.getElementById('editInterestArea').value, contact_date: document.getElementById('editContactDate').value, message: document.getElementById('editMessage').value, remarks: document.getElementById('editRemarks').value }; const { error } = await supabaseClient.from('investor_inquiries').update(updates).eq('id', currentEditId); btn.innerText = '저장하기'; if (error) alert('수정 오류'); else { closeEditModal(); loadInvestors(); } }
+        function toggleAll(source) { document.querySelectorAll('.investor-checkbox').forEach(cb => cb.checked = source.checked); }
 
-        async function loadCompanies() {
-            const { data } = await supabaseClient.from('kfintech_directory').select('*').order('created_at', { ascending: false });
-            companyData = data || [];
-            document.getElementById('total-companies').innerText = `Total: ${companyData.length}`;
-            renderCompanyTable(companyData);
-        }
+        async function handleExcelUpload(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = async function(e) { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'}); const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]); const insertData = jsonData.map(row => { let rawType = row['문의유형'] || row['Type'] || ''; let typeCode = 'General'; if(rawType.includes('Meeting')) typeCode = 'Meeting'; else if(rawType.includes('IR')) typeCode = 'IR'; else if(rawType.includes('Match')) typeCode = 'Match'; else if(rawType.includes('General')) typeCode = 'General'; else if(rawType !== '') typeCode = rawType; let record = { full_name: row['이름'] || row['Name'] || '미상', organization: row['소속기관'] || row['Organization'] || '미상', region: row['국가'] || row['Country'] || 'Others', work_email: row['이메일'] || row['Email'] || '', phone: String(row['전화번호'] || row['Phone'] || ''), interest_area: typeCode, contact_date: String(row['접촉일'] || row['접촉일자'] || ''), message: String(row['접수메시지'] || row['Message'] || ''), remarks: String(row['관리자비고'] || row['Remarks'] || '') }; const inputDate = row['입력일'] || row['가입일'] || ''; if (inputDate) record.created_at = inputDate + 'T00:00:00Z'; return record; }).filter(item => item.work_email !== ''); if(insertData.length > 0) { await supabaseClient.from('investor_inquiries').insert(insertData); loadInvestors(); } event.target.value = ''; }; reader.readAsArrayBuffer(file); }
+        function downloadExcel() { if (currentFilteredData.length === 0) return; const excelData = currentFilteredData.map(inv => ({ '이름': inv.full_name || '', '소속기관': inv.organization || '', '국가': inv.region || '', '이메일': inv.work_email || '', '전화번호': inv.phone || '', '문의유형': inv.interest_area || '', '접수메시지': inv.message || '', '관리자비고': inv.remarks || '', '접촉일': inv.contact_date || '', '입력일': inv.created_at ? inv.created_at.split('T')[0] : '' })); const worksheet = XLSX.utils.json_to_sheet(excelData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "투자자_CRM_데이터"); XLSX.writeFile(workbook, `K-Fintech_투자자_CRM_${new Date().toISOString().split('T')[0]}.xlsx`); }
+        async function downloadCrmTemplate() { const workbook = new ExcelJS.Workbook(); const worksheet = workbook.addWorksheet('투자자_업로드양식'); const refSheet = workbook.addWorksheet('ReferenceData'); refSheet.state = 'hidden'; globalCountries.forEach((c, idx) => { refSheet.getCell(`A${idx + 1}`).value = c; }); const typesFull = ["Request 1:1 Meeting", "Request IR Materials", "Startup Matching", "General Inquiry"]; typesFull.forEach((t, idx) => { refSheet.getCell(`B${idx + 1}`).value = t; }); worksheet.columns = [ { header: '이름', key: 'name', width: 15 }, { header: '소속기관', key: 'org', width: 25 }, { header: '국가', key: 'country', width: 20 }, { header: '이메일', key: 'email', width: 30 }, { header: '전화번호', key: 'phone', width: 20 }, { header: '문의유형', key: 'type', width: 25 }, { header: '접수메시지', key: 'message', width: 40 }, { header: '관리자비고', key: 'remarks', width: 40 }, { header: '접촉일', key: 'contact_date', width: 15 }, { header: '입력일', key: 'created_at', width: 15 } ]; worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } }; worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF475569' } }; worksheet.addRow({ name: 'John Doe', org: 'K-Fintech VC', country: 'United States', email: 'john@example.com', phone: '+1 234 567 890', type: 'Request 1:1 Meeting', message: 'I would like to arrange a meeting.', remarks: 'Will reply tomorrow.', contact_date: '2026-03-15', created_at: '2026-03-16' }); for (let i = 2; i <= 1000; i++) { worksheet.getCell(`C${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: ['ReferenceData!$A$1:$A$195'] }; worksheet.getCell(`F${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: ['ReferenceData!$B$1:$B$4'] }; } const buffer = await workbook.xlsx.writeBuffer(); saveAs(new Blob([buffer]), '투자자CRM_업로드_양식.xlsx'); }
 
-        function renderCompanyTable(arr) {
-            document.getElementById('company-list').innerHTML = arr.map(c => `
-                <tr class="hover:bg-slate-50 text-xs border-b">
-                    <td class="p-4 font-bold text-indigo-600">${c.company_name}</td>
-                    <td class="p-4">${c.ceo_name || '-'}</td>
-                    <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded">${c.category}</span></td>
-                    <td class="p-4">${c.funding_amount || '-'}</td>
-                    <td class="p-4 text-emerald-600 font-bold">${c.revenue || '-'}</td>
-                    <td class="p-4 text-center"><button class="text-slate-400"><i class="fas fa-edit"></i></button></td>
-                </tr>`).join('');
-        }
+        async function loadCompanies() { const { data: settingData } = await supabaseClient.from('site_settings').select('*').eq('setting_key', 'directory_sort'); if (settingData && settingData.length > 0) document.getElementById('frontendSortSelect').value = settingData[0].setting_value; const { data } = await supabaseClient.from('kfintech_directory').select('*').order('created_at', { ascending: false }); companyData = data || []; currentFilteredCompanyData = companyData; document.getElementById('total-companies').innerText = `총 ${companyData.length}개`; renderCompanyTable(companyData); }
+        async function saveDisplaySetting() { const sortVal = document.getElementById('frontendSortSelect').value; const { error } = await supabaseClient.from('site_settings').upsert({ setting_key: 'directory_sort', setting_value: sortVal }); if (!error) alert('정렬 순서가 저장되었습니다!'); }
+        function renderCompanyTable(dataArray) { const listElement = document.getElementById('company-list'); if(dataArray.length === 0) { listElement.innerHTML = `<tr><td colspan="9" class="p-10 text-center text-slate-500">검색 결과 없음</td></tr>`; return; } listElement.innerHTML = dataArray.map((comp) => { let logoHtml = comp.logo_url ? `<img src="${comp.logo_url}" class="company-logo inline-block mr-3">` : `<div class="company-logo inline-flex items-center justify-center mr-3 text-slate-400"><i class="fas fa-building"></i></div>`; let badgeStr = comp.badge_text ? `<span class="bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-2 py-1 rounded">${comp.badge_text}</span>` : '-'; let mediaHtml = ''; if(comp.website) mediaHtml += `<a href="${comp.website}" target="_blank" class="text-indigo-500 hover:text-indigo-700 mx-1"><i class="fas fa-globe"></i></a>`; if(comp.ir_deck_url) mediaHtml += `<a href="${comp.ir_deck_url}" target="_blank" class="text-red-500 hover:text-red-700 mx-1"><i class="fas fa-file-pdf"></i></a>`; if(comp.video_url) mediaHtml += `<a href="${comp.video_url}" target="_blank" class="text-rose-500 hover:text-rose-700 mx-1"><i class="fas fa-play-circle"></i></a>`; return `<tr class="hover:bg-indigo-50/50 bg-white border-b"><td class="p-4 font-bold flex items-center">${logoHtml} ${comp.company_name}</td><td class="p-4 text-xs">${comp.ceo_name || '-'}</td><td class="p-4 text-xs text-indigo-700 font-bold">${comp.category}</td><td class="p-4 text-xs">${comp.funding_stage || '-'}</td><td class="p-4 text-xs font-bold text-indigo-600">${comp.funding_amount || '-'}</td><td class="p-4 text-xs font-bold text-emerald-600">${comp.revenue || '-'}</td><td class="p-4">${badgeStr}</td><td class="p-4 text-center text-lg">${mediaHtml || '-'}</td><td class="p-4 text-center"><button onclick="editCompany('${comp.id}')" class="text-slate-400 hover:text-indigo-600 mx-1"><i class="fas fa-edit"></i></button><button onclick="deleteCompany('${comp.id}')" class="text-slate-400 hover:text-red-600 mx-1"><i class="fas fa-trash-alt"></i></button></td></tr>`; }).join(''); }
+        function applyCompanyFilters() { const name = document.getElementById('filterCompName').value.toLowerCase(); const category = document.getElementById('filterCompCategory').value; const stage = document.getElementById('filterCompStage').value; let filtered = companyData; if (name) filtered = filtered.filter(comp => comp.company_name && comp.company_name.toLowerCase().includes(name)); if (category) filtered = filtered.filter(comp => comp.category === category); if (stage) filtered = filtered.filter(comp => comp.funding_stage === stage); currentFilteredCompanyData = filtered; document.getElementById('total-companies').innerText = `총 ${filtered.length}개`; renderCompanyTable(filtered); }
+        function resetCompanyFilters() { document.getElementById('filterCompName').value = ''; document.getElementById('filterCompCategory').value = ''; document.getElementById('filterCompStage').value = ''; currentFilteredCompanyData = companyData; document.getElementById('total-companies').innerText = `총 ${companyData.length}개`; renderCompanyTable(companyData); }
+        function openCompanyModal() { document.getElementById('compId').value = ''; document.getElementById('compName').value = ''; document.getElementById('compCeo').value = ''; document.getElementById('compCategory').value = 'Exchange'; document.getElementById('compFounded').value = ''; document.getElementById('compStage').value = ''; document.getElementById('compAmount').value = ''; document.getElementById('compRevenue').value = ''; document.getElementById('compBadge').value = ''; document.getElementById('compWebsite').value = ''; document.getElementById('compLogoUrl').value = ''; document.getElementById('compKeywords').value = ''; document.getElementById('compIrDeck').value = ''; document.getElementById('compVideoUrl').value = ''; document.getElementById('companyModal').classList.remove('hidden'); }
+        function closeCompanyModal() { document.getElementById('companyModal').classList.add('hidden'); }
+        function editCompany(id) { const comp = companyData.find(item => String(item.id) === String(id)); if(!comp) return; document.getElementById('compId').value = comp.id; document.getElementById('compName').value = comp.company_name || ''; document.getElementById('compCeo').value = comp.ceo_name || ''; document.getElementById('compCategory').value = comp.category || 'Exchange'; document.getElementById('compFounded').value = comp.founded_date || ''; document.getElementById('compStage').value = comp.funding_stage || ''; document.getElementById('compAmount').value = comp.funding_amount || ''; document.getElementById('compRevenue').value = comp.revenue || ''; document.getElementById('compBadge').value = comp.badge_text || ''; document.getElementById('compWebsite').value = comp.website || ''; document.getElementById('compLogoUrl').value = comp.logo_url || ''; document.getElementById('compKeywords').value = comp.keywords || ''; document.getElementById('compIrDeck').value = comp.ir_deck_url || ''; document.getElementById('compVideoUrl').value = comp.video_url || ''; document.getElementById('companyModal').classList.remove('hidden'); }
+        async function uploadFileToSupabase(fileInputId, urlInputId, type) { const fileInput = document.getElementById(fileInputId); const file = fileInput.files[0]; if(!file) return; const btn = document.getElementById('saveCompanyBtn'); const originalText = btn.innerText; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>업로드 중...'; btn.disabled = true; const fileExt = file.name.split('.').pop(); const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`; const filePath = `${type}_assets/${fileName}`; const { data, error } = await supabaseClient.storage.from('fintech_assets').upload(filePath, file); if(error) { alert('업로드 실패: ' + error.message); } else { const { data: publicUrlData } = supabaseClient.storage.from('fintech_assets').getPublicUrl(filePath); document.getElementById(urlInputId).value = publicUrlData.publicUrl; alert('자동 입력 완료!'); } btn.innerText = originalText; btn.disabled = false; }
+        async function submitCompanyForm(e) { e.preventDefault(); const btn = document.getElementById('saveCompanyBtn'); btn.innerText = '저장 중...'; const compId = document.getElementById('compId').value; const newCompany = { company_name: document.getElementById('compName').value, ceo_name: document.getElementById('compCeo').value, category: document.getElementById('compCategory').value, founded_date: document.getElementById('compFounded').value, funding_stage: document.getElementById('compStage').value, funding_amount: document.getElementById('compAmount').value, revenue: document.getElementById('compRevenue').value, badge_text: document.getElementById('compBadge').value, website: document.getElementById('compWebsite').value, logo_url: document.getElementById('compLogoUrl').value, keywords: document.getElementById('compKeywords').value, ir_deck_url: document.getElementById('compIrDeck').value, video_url: document.getElementById('compVideoUrl').value }; if (compId) { const { error } = await supabaseClient.from('kfintech_directory').update(newCompany).eq('id', compId); if(error) alert('수정 에러: ' + error.message); else { closeCompanyModal(); loadCompanies(); } } else { const { error } = await supabaseClient.from('kfintech_directory').insert([newCompany]); if(error) alert('등록 에러: ' + error.message); else { closeCompanyModal(); loadCompanies(); } } btn.innerText = '저장하기'; }
+        async function deleteCompany(id) { if(!confirm("정말 삭제하시겠습니까?")) return; await supabaseClient.from('kfintech_directory').delete().eq('id', id); loadCompanies(); }
+        function downloadCompanyExcel() { if (currentFilteredCompanyData.length === 0) return; const excelData = currentFilteredCompanyData.map(comp => ({ '회사명(Company)': comp.company_name || '', '대표자(CEO)': comp.ceo_name || '', '설립일(Founded)': comp.founded_date || '', '핀테크분야(Category)': comp.category || '', '투자단계(Stage)': comp.funding_stage || '', '누적투자액(Funding)': comp.funding_amount || '', '매출액(Revenue)': comp.revenue || '', '인증뱃지(Badge)': comp.badge_text || '', '홈페이지(Website)': comp.website || '', '핵심키워드(Keywords)': comp.keywords || '', '영문소개서(IR Deck)': comp.ir_deck_url || '', '홍보영상(Video)': comp.video_url || '', '로고주소(Logo URL)': comp.logo_url || '' })); const worksheet = XLSX.utils.json_to_sheet(excelData); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Fintech_Directory"); XLSX.writeFile(workbook, `Global_Fintech_DB_${new Date().toISOString().split('T')[0]}.xlsx`); }
+        async function handleCompanyExcelUpload(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = async function(e) { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'}); const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]); const insertData = jsonData.map(row => ({ company_name: row['회사명'] || row['회사명(Company)'] || row['Company'] || '', ceo_name: row['대표자'] || row['대표자(CEO)'] || row['CEO'] || '', founded_date: String(row['설립일'] || row['설립일(Founded)'] || row['Founded'] || ''), category: row['핀테크분야'] || row['핀테크분야(Category)'] || row['Category'] || 'Others', funding_stage: row['투자유치단계'] || row['투자단계(Stage)'] || row['Stage'] || '', funding_amount: String(row['누적투자액'] || row['누적투자액(Funding)'] || row['Funding'] || ''), revenue: String(row['매출액'] || row['매출액(Revenue)'] || row['Revenue'] || ''), badge_text: String(row['인증뱃지'] || row['인증뱃지(Badge)'] || row['Badge'] || ''), website: row['홈페이지'] || row['홈페이지(Website)'] || row['Website'] || '', keywords: row['핵심키워드'] || row['핵심키워드(Keywords)'] || row['Keywords'] || '', ir_deck_url: row['영문소개서'] || row['영문소개서(IR Deck)'] || row['IR Deck'] || '', video_url: row['홍보영상'] || row['홍보영상(Video)'] || row['Video'] || '', logo_url: row['로고주소'] || row['로고주소(Logo URL)'] || row['Logo URL'] || '' })).filter(item => item.company_name !== ''); if(insertData.length > 0) { await supabaseClient.from('kfintech_directory').insert(insertData); loadCompanies(); } event.target.value = ''; }; reader.readAsArrayBuffer(file); }
+        async function downloadCompanyTemplate() { const workbook = new ExcelJS.Workbook(); const worksheet = workbook.addWorksheet('기업DB_업로드양식'); worksheet.columns = [ { header: '회사명(Company)', key: 'name', width: 25 }, { header: '대표자(CEO)', key: 'ceo', width: 15 }, { header: '설립일(Founded)', key: 'founded', width: 15 }, { header: '핀테크분야(Category)', key: 'category', width: 30 }, { header: '투자단계(Stage)', key: 'stage', width: 20 }, { header: '누적투자액(Funding)', key: 'funding', width: 20 }, { header: '매출액(Revenue)', key: 'revenue', width: 20 }, { header: '인증뱃지(Badge)', key: 'badge', width: 20 }, { header: '홈페이지(Website)', key: 'website', width: 30 }, { header: '핵심키워드(Keywords)', key: 'keywords', width: 30 }, { header: '영문소개서(IR Deck)', key: 'irdeck', width: 30 }, { header: '홍보영상(Video)', key: 'video', width: 30 }, { header: '로고주소(Logo URL)', key: 'logo', width: 30 } ]; worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } }; worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } }; worksheet.addRow({ name: '업비트 (예시)', ceo: '이석우', founded: '2012-10', category: 'Exchange', stage: 'Series C+', funding: '$100M', revenue: '$500M', badge: 'Fintech 30 S1', website: 'https://upbit.com', keywords: 'Crypto', irdeck: '', video: '', logo: '' }); const categories = '"Exchange,Investment,Security & Authentication,Payment,InsurTech,Wealth Management,Crowdfunding,Fintech SI,Cross-border Remittance,Others"'; const stages = '"Seed,Pre-A,Series A,Series B,Series C+,IPO,M&A,Undisclosed"'; for (let i = 2; i <= 1000; i++) { worksheet.getCell(`D${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [categories] }; worksheet.getCell(`E${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [stages] }; } const buffer = await workbook.xlsx.writeBuffer(); saveAs(new Blob([buffer]), 'Global_Fintech_DB_선택형예제.xlsx'); }
 
-        function drawCharts(data) {
-            const counts = {}; data.forEach(inv => { if (inv.region) counts[inv.region] = (counts[inv.region] || 0) + 1; });
-            const dataTable = google.visualization.arrayToDataTable([['Country', 'Count'], ...Object.entries(counts)]);
-            const map = new google.visualization.GeoChart(document.getElementById('regions_div'));
-            map.draw(dataTable, { region: document.getElementById('mapRegion').value, colorAxis: {colors: ['#e2e8f0', '#3b82f6', '#1e40af']} });
-            const pie = new google.visualization.PieChart(document.getElementById('piechart_div'));
-            pie.draw(dataTable, { pieHole: 0.4, chartArea: {width:'100%',height:'80%'} });
-        }
-
-        function applyFilters() {
-            const cT = document.getElementById('filterContactType').value;
-            const st = document.getElementById('filterStatus').value;
-            const inS = document.getElementById('filterInStart').value;
-            const inE = document.getElementById('filterInEnd').value;
-            const coS = document.getElementById('filterContactStart').value;
-            const coE = document.getElementById('filterContactEnd').value;
-            
-            let filtered = investorData.filter(inv => {
-                const dI = inv.created_at ? inv.created_at.split('T')[0] : '';
-                const dC = inv.contact_date || '';
-                return (!cT || (inv.contact_type || 'Investor') === cT) &&
-                       (!st || (st === 'uncontacted' && !dC)) &&
-                       (!inS || dI >= inS) && (!inE || dI <= inE) &&
-                       (!coS || dC >= coS) && (!coE || dC <= coE);
-            });
-            renderTable(filtered); drawCharts(filtered);
-        }
-
-        function resetFilters() { document.querySelectorAll('input, select').forEach(e => e.value = ''); renderTable(investorData); drawCharts(investorData); }
-        function switchView(v) {
-            document.getElementById('view-investor').classList.toggle('hidden', v !== 'investor');
-            document.getElementById('view-company').classList.toggle('hidden', v !== 'company');
-            document.getElementById('nav-investor').classList.toggle('bg-blue-600/20', v === 'investor');
-            document.getElementById('nav-company').classList.toggle('bg-blue-600/20', v === 'company');
-        }
-
-        function openEditModal(id) {
-            const inv = investorData.find(i => String(i.id) === String(id));
-            currentEditId = id;
-            document.getElementById('editContactType').value = inv.contact_type || 'Investor';
-            document.getElementById('editName').value = inv.full_name || '';
-            document.getElementById('editContactDate').value = inv.contact_date || '';
-            document.getElementById('editRemarks').value = inv.remarks || '';
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
-        async function submitEditForm(e) {
-            e.preventDefault();
-            const updates = { contact_type: document.getElementById('editContactType').value, full_name: document.getElementById('editName').value, contact_date: document.getElementById('editContactDate').value, remarks: document.getElementById('editRemarks').value };
-            await supabaseClient.from('investor_inquiries').update(updates).eq('id', currentEditId);
-            closeEditModal(); loadInvestors();
-        }
-        async function saveDisplaySetting() { await supabaseClient.from('site_settings').upsert({ setting_key: 'directory_sort', setting_value: document.getElementById('frontendSortSelect').value }); alert('저장 완료'); }
-        function logoutAdmin() { supabaseClient.auth.signOut(); window.location.reload(); }
         window.onload = checkSession;
     </script>
 </body>
