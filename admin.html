@@ -3,106 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-Fintech Admin | CRM Master</title>
+    <title>K-Fintech Admin | CRM & Enterprise DB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         .truncate-text { max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        /* 지도가 잘 보우도록 크기 고정 */
-        #regions_div { min-height: 450px; background: #f8fafc; border-radius: 1.5rem; }
+        #regions_div { min-height: 400px; background: #f8fafc; border-radius: 1.5rem; }
         .uncontacted-row { background-color: #fffafb; }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900">
 
-    <div id="dashboard-screen" class="h-screen flex overflow-hidden">
+    <div id="login-screen" class="flex items-center justify-center h-screen bg-slate-900 absolute inset-0 z-50">
+        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center">
+            <h2 class="text-2xl font-black text-white mb-6">Admin Login</h2>
+            <form id="loginForm" class="space-y-4 text-left">
+                <input type="email" id="adminEmail" placeholder="Email" required class="w-full bg-slate-700 border-none rounded-xl px-4 py-3 text-white">
+                <input type="password" id="adminPassword" placeholder="Password" required class="w-full bg-slate-700 border-none rounded-xl px-4 py-3 text-white">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl">접속하기</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden h-screen flex overflow-hidden">
         <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
             <div class="p-6 text-xl font-black border-b border-slate-800 text-blue-500">K-Fintech Hub</div>
             <nav class="flex-1 p-4 space-y-2">
-                <button onclick="switchView('investor')" class="w-full text-left p-3 rounded-xl bg-blue-600/20 text-blue-400 font-bold"><i class="fas fa-users-cog mr-2"></i>투자자 CRM</button>
-                <button onclick="location.href='index.html'" class="w-full text-left p-3 rounded-xl text-slate-400 hover:bg-slate-800 transition"><i class="fas fa-home mr-2"></i>메인 사이트</button>
+                <button onclick="switchView('investor')" id="nav-investor" class="w-full text-left p-3 rounded-xl bg-blue-600/20 text-blue-400 font-bold"><i class="fas fa-users mr-2"></i>투자자 CRM</button>
+                <button onclick="switchView('company')" id="nav-company" class="w-full text-left p-3 rounded-xl text-slate-400 hover:bg-slate-800 transition"><i class="fas fa-building mr-2"></i>기업 DB 관리</button>
             </nav>
             <div class="p-4 border-t border-slate-800"><button onclick="logoutAdmin()" class="text-red-400 text-sm font-bold"><i class="fas fa-power-off mr-2"></i>LOGOUT</button></div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto p-8 bg-slate-50">
+        <main class="flex-1 overflow-y-auto p-8">
             <div id="view-investor" class="fade-in">
                 <header class="flex justify-between items-end mb-8">
-                    <div><h1 class="text-4xl font-black text-slate-900 tracking-tight">투자자 CRM 관리</h1><p class="text-slate-500 font-medium">글로벌 유입 분석 및 미접촉자 집중 관리</p></div>
-                    <div id="total-investors" class="bg-white px-6 py-3 rounded-2xl shadow-sm border-2 border-blue-100 font-black text-blue-600 text-xl">Total: 0</div>
+                    <div><h1 class="text-3xl font-black text-slate-900">글로벌 투자자 CRM</h1></div>
+                    <div id="total-investors" class="bg-white px-6 py-2 rounded-2xl shadow-sm border font-black text-blue-600">Total: 0</div>
                 </header>
 
-                <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-                    <div class="lg:col-span-2 bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-center mb-6">
-                            <span class="font-bold text-lg text-slate-800"><i class="fas fa-map-marked-alt mr-2 text-blue-500"></i>국가별 데이터 밀도</span>
-                            <select id="mapRegion" onchange="drawCharts(investorData)" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold focus:outline-none">
-                                <option value="world">🌍 전체 세계</option>
-                                <option value="142">🌏 아시아 전체</option>
-                                <option value="030">📍 동아시아 (한/중/일)</option>
-                                <option value="035">📍 동남아시아 (싱가포르/베트남..)</option>
-                                <option value="150">🌍 유럽</option>
-                                <option value="019">🌎 아메리카</option>
-                            </select>
-                        </div>
-                        <div id="regions_div" class="w-full shadow-inner"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-100">
+                        <div class="flex justify-between items-center mb-4"><span class="font-bold">국가별 분포</span>
+                        <select id="mapRegion" onchange="drawCharts(investorData)" class="text-xs border rounded-lg p-1">
+                            <option value="world">World</option><option value="142">Asia</option><option value="030">East Asia</option><option value="035">SE Asia</option>
+                        </select></div>
+                        <div id="regions_div"></div>
                     </div>
-                    <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-                        <span class="font-bold text-lg text-slate-800 block mb-6"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i>유형별 비중</span>
-                        <div id="piechart_div" class="w-full h-[350px]"></div>
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100"><div id="piechart_div" class="w-full h-[350px]"></div></div>
+                </div>
+
+                <section class="bg-white rounded-3xl shadow-sm border p-6 mb-6">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end text-xs font-bold">
+                        <div>구분<select id="filterContactType" class="w-full mt-1 border rounded-lg p-2 bg-slate-50"><option value="">전체</option><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select></div>
+                        <div>미접촉 필터<select id="filterStatus" class="w-full mt-1 border-2 border-rose-200 rounded-lg p-2 bg-rose-50 text-rose-600"><option value="">전체</option><option value="uncontacted">🚩 미접촉자</option></select></div>
+                        <div>입력일 기간<div class="flex gap-1 mt-1"><input type="date" id="filterInStart" class="w-full border rounded p-1"><input type="date" id="filterInEnd" class="w-full border rounded p-1"></div></div>
+                        <div class="text-blue-600">접촉일 기간<div class="flex gap-1 mt-1"><input type="date" id="filterContactStart" class="w-full border border-blue-200 rounded p-1"><input type="date" id="filterContactEnd" class="w-full border border-blue-200 rounded p-1"></div></div>
+                        <button onclick="applyFilters()" class="bg-slate-900 text-white py-2.5 rounded-xl">조회</button>
+                        <button onclick="resetFilters()" class="bg-slate-100 text-slate-400 py-2.5 rounded-xl"><i class="fas fa-undo"></i></button>
                     </div>
                 </section>
 
-                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 mb-8">
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end text-xs font-bold text-slate-500">
-                        <div>구분<select id="filterContactType" class="w-full mt-2 border rounded-xl p-3 bg-slate-50"><option value="">전체</option><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select></div>
-                        <div>국가<select id="filterCountry" class="w-full mt-2 border rounded-xl p-3 bg-slate-50"><option value="">전체 국가</option></select></div>
-                        <div>상태 관리<select id="filterStatus" class="w-full mt-2 border-2 border-rose-200 rounded-xl p-3 bg-rose-50 text-rose-600 font-black"><option value="">전체 상태</option><option value="uncontacted">🚩 미접촉자만 보기</option><option value="contacted">✅ 접촉 완료만</option></select></div>
-                        
-                        <div class="lg:col-span-1">데이터 입력일<div class="flex items-center gap-1 mt-2"><input type="date" id="filterInStart" class="w-full border rounded-xl p-2 text-[10px]"><input type="date" id="filterInEnd" class="w-full border rounded-xl p-2 text-[10px]"></div></div>
-                        <div class="lg:col-span-1 text-blue-600">접촉일 기간<div class="flex items-center gap-1 mt-2"><input type="date" id="filterContactStart" class="w-full border border-blue-200 bg-blue-50 rounded-xl p-2 text-[10px]"><input type="date" id="filterContactEnd" class="w-full border border-blue-200 bg-blue-50 rounded-xl p-2 text-[10px]"></div></div>
-                        
-                        <div class="flex gap-2">
-                            <button onclick="applyFilters()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl hover:bg-black transition shadow-lg shadow-slate-200">검색</button>
-                            <button onclick="resetFilters()" class="bg-slate-100 text-slate-400 px-4 py-3 rounded-xl hover:bg-slate-200"><i class="fas fa-undo"></i></button>
-                        </div>
-                    </div>
-                </section>
-
-                <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
+                <div class="bg-white rounded-3xl shadow-xl border overflow-hidden">
                     <table class="w-full text-left text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-slate-900 text-slate-400 font-bold border-b border-slate-800 text-[10px] uppercase tracking-[0.1em]">
-                                <th class="p-5 w-12 text-center">No</th>
-                                <th class="p-5">Investor Name</th>
-                                <th class="p-5">Organization</th>
-                                <th class="p-5">Region</th>
-                                <th class="p-5">Contact Details</th>
-                                <th class="p-5 text-center">Created At</th>
-                                <th class="p-5 text-center">Last Contact</th>
-                                <th class="p-5 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="investor-list" class="divide-y divide-slate-50 text-slate-700"></tbody>
+                        <thead><tr class="bg-slate-900 text-slate-400 font-bold border-b text-[10px] uppercase"><th class="p-4 text-center">No</th><th class="p-4">Name (Type)</th><th class="p-4">Org</th><th class="p-4">Region</th><th class="p-4 text-center">Created At</th><th class="p-4 text-center text-blue-500">Contact Date</th><th class="p-4 text-center">Edit</th></tr></thead>
+                        <tbody id="investor-list" class="divide-y divide-slate-50"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-company" class="hidden fade-in">
+                <header class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-black text-slate-900">기업 DB 관리</h1>
+                    <div id="total-companies" class="bg-white px-6 py-2 rounded-2xl shadow-sm border font-black text-indigo-600">Total: 0</div>
+                </header>
+                <section class="bg-slate-900 rounded-3xl p-6 mb-8 text-white flex justify-between items-center">
+                    <div><h2 class="font-bold">프론트엔드 자동 롤링 설정</h2><p class="text-xs text-slate-400">메인 사이트 정렬 기준</p></div>
+                    <div class="flex gap-3">
+                        <select id="frontendSortSelect" class="bg-slate-800 border-none rounded-lg px-4 py-2 text-sm">
+                            <option value="created_at">최신순</option><option value="revenue">매출순</option><option value="funding">투자순</option>
+                        </select>
+                        <button onclick="saveDisplaySetting()" class="bg-indigo-600 px-5 py-2 rounded-lg text-sm font-bold">적용</button>
+                    </div>
+                </section>
+                <div class="bg-white rounded-3xl shadow-xl border overflow-hidden">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead><tr class="bg-slate-50 text-slate-500 font-bold border-b text-[10px] uppercase"><th class="p-4">Company</th><th class="p-4">CEO</th><th class="p-4">Category</th><th class="p-4">Funding</th><th class="p-4 text-emerald-600">Revenue</th><th class="p-4 text-center">Action</th></tr></thead>
+                        <tbody id="company-list" class="divide-y divide-slate-50"></tbody>
                     </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="editModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white/20">
-            <div class="px-8 py-6 bg-slate-50 border-b flex justify-between items-center"><h3 class="font-black text-xl">CRM Record Edit</h3><button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-2xl"></i></button></div>
-            <form id="editForm" class="p-8 space-y-5" onsubmit="submitEditForm(event)">
+    <div id="editModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b flex justify-between items-center font-bold"><h3>기록 수정</h3><button onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
+            <form id="editForm" class="p-6 space-y-4" onsubmit="submitEditForm(event)">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Type</label><select id="editContactType" class="w-full border-2 border-blue-50 rounded-2xl p-4 text-sm bg-blue-50/50 font-bold focus:border-blue-500 outline-none"><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select></div>
-                    <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Name</label><input type="text" id="editName" class="w-full border-2 border-slate-50 rounded-2xl p-4 text-sm font-bold focus:border-blue-500 outline-none"></div>
+                    <select id="editContactType" class="border rounded-xl p-3 text-sm"><option value="Investor">Investor</option><option value="Government">Government</option><option value="Partner">Partner</option></select>
+                    <input type="text" id="editName" class="border rounded-xl p-3 text-sm">
                 </div>
-                <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Contact Date (Leave blank if uncontacted)</label><input type="date" id="editContactDate" class="w-full border-2 border-blue-100 rounded-2xl p-4 text-sm bg-blue-50/30 font-bold focus:border-blue-500 outline-none"></div>
-                <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Remarks</label><textarea id="editRemarks" rows="3" class="w-full border-2 border-slate-50 rounded-2xl p-4 text-sm font-medium focus:border-blue-500 outline-none"></textarea></div>
-                <div class="pt-6 flex gap-3"><button type="button" onclick="closeEditModal()" class="flex-1 py-4 rounded-2xl bg-slate-100 font-bold text-slate-500 hover:bg-slate-200 transition">CANCEL</button><button type="submit" class="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-black shadow-xl shadow-blue-200 hover:bg-blue-700 transition">SAVE CHANGES</button></div>
+                <input type="date" id="editContactDate" class="w-full border rounded-xl p-3 text-sm bg-blue-50">
+                <textarea id="editRemarks" rows="3" class="w-full border rounded-xl p-3 text-sm"></textarea>
+                <div class="flex gap-2"><button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl">취소</button><button type="submit" class="flex-[2] py-3 bg-blue-600 text-white rounded-xl font-bold">저장</button></div>
             </form>
         </div>
     </div>
@@ -113,10 +122,9 @@
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let investorData = [];
+        let investorData = []; let companyData = []; let currentEditId = null;
         google.charts.load('current', { 'packages': ['geochart', 'corechart'] });
 
-        // --- 세션 및 초기화 로직 ---
         async function checkSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) showDashboard(); else document.getElementById('login-screen').classList.remove('hidden');
@@ -124,141 +132,98 @@
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const { error } = await supabaseClient.auth.signInWithPassword({ 
-                email: document.getElementById('adminEmail').value, 
-                password: document.getElementById('adminPassword').value 
-            });
-            if (error) alert('Login Failed'); else showDashboard();
+            const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('adminEmail').value, password: document.getElementById('adminPassword').value });
+            if (error) alert('로그인 실패'); else showDashboard();
         });
 
         function showDashboard() {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            loadInvestors();
+            loadInvestors(); loadCompanies();
         }
 
-        // --- 데이터 로드 및 렌더링 ---
         async function loadInvestors() {
-            const { data, error } = await supabaseClient.from('investor_inquiries').select('*').order('created_at', { ascending: false });
-            if (error) return;
+            const { data } = await supabaseClient.from('investor_inquiries').select('*').order('created_at', { ascending: false });
             investorData = data || [];
-            
-            populateFilterOptions(investorData);
             renderTable(investorData);
-            
-            // 차트 라이브러리 로드 대기 후 실행
             google.charts.setOnLoadCallback(() => drawCharts(investorData));
         }
 
-        function renderTable(dataArray) {
-            document.getElementById('total-investors').innerText = `Total: ${dataArray.length}`;
-            const listElement = document.getElementById('investor-list');
-            
-            listElement.innerHTML = dataArray.map((inv, idx) => {
+        function renderTable(arr) {
+            document.getElementById('total-investors').innerText = `Total: ${arr.length}`;
+            document.getElementById('investor-list').innerHTML = arr.map((inv, idx) => {
                 const inDate = inv.created_at ? inv.created_at.split('T')[0] : '-';
-                const hasContacted = inv.contact_date && inv.contact_date.trim() !== '';
-                const cDate = hasContacted ? inv.contact_date : `<span class="bg-rose-500 text-white px-2 py-1 rounded-md text-[9px] font-black animate-pulse shadow-sm shadow-rose-200 italic">미접촉</span>`;
-                
-                const cType = inv.contact_type || 'Investor';
-                let badge = 'bg-blue-100 text-blue-600 border-blue-200';
-                if(cType.includes('Gov')) badge = 'bg-purple-100 text-purple-600 border-purple-200';
-                else if(cType.includes('Partner')) badge = 'bg-emerald-100 text-emerald-600 border-emerald-200';
-                
-                // 미접촉 행 강조 (연한 붉은 배경)
-                const rowClass = !hasContacted ? 'uncontacted-row' : '';
-
-                return `<tr class="${rowClass} hover:bg-slate-100/50 transition text-xs border-b border-slate-50">
-                    <td class="p-5 text-center text-slate-300 font-mono">${idx+1}</td>
-                    <td class="p-5 font-black"><span class="${badge} border text-[9px] px-2 py-0.5 rounded-md mr-2 uppercase">${cType}</span>${inv.full_name}</td>
-                    <td class="p-5 font-bold text-slate-600">${inv.organization}</td>
-                    <td class="p-5 font-black text-indigo-500">${inv.region || '-'}</td>
-                    <td class="p-5 text-slate-400 font-medium">${inv.work_email}</td>
-                    <td class="p-5 text-center text-slate-400 font-bold">${inDate}</td>
-                    <td class="p-5 text-center font-black">${cDate}</td>
-                    <td class="p-5 text-center"><button onclick="openEditModal('${inv.id}')" class="bg-white border shadow-sm p-2 rounded-xl text-blue-500 hover:text-blue-700 transition"><i class="fas fa-edit"></i></button></td>
+                const hasC = inv.contact_date && inv.contact_date.trim() !== '';
+                const cDate = hasC ? inv.contact_date : `<span class="bg-rose-500 text-white px-2 py-0.5 rounded text-[10px] font-black animate-pulse">미접촉</span>`;
+                return `<tr class="${!hasC ? 'uncontacted-row':''} hover:bg-slate-50 text-xs border-b">
+                    <td class="p-4 text-center text-slate-300 font-mono">${idx+1}</td>
+                    <td class="p-4 font-bold"><span class="px-1.5 py-0.5 rounded mr-2 uppercase text-[9px] bg-slate-100">${inv.contact_type || 'Investor'}</span>${inv.full_name}</td>
+                    <td class="p-4">${inv.organization}</td>
+                    <td class="p-4 font-bold text-indigo-500">${inv.region || '-'}</td>
+                    <td class="p-4 text-center">${inDate}</td>
+                    <td class="p-4 text-center font-black">${cDate}</td>
+                    <td class="p-4 text-center"><button onclick="openEditModal('${inv.id}')" class="text-blue-500"><i class="fas fa-edit"></i></button></td>
                 </tr>`;
             }).join('');
         }
 
-        // 🔥 차트 그리기 (색상 축 & 아시아 세분화 복구)
-        function drawCharts(data) {
-            const counts = {};
-            data.forEach(inv => { if (inv.region) counts[inv.region] = (counts[inv.region] || 0) + 1; });
-            const chartDataArray = [['Country', 'Investors Count']];
-            for (const [country, count] of Object.entries(counts)) { chartDataArray.push([country, count]); }
-            const dataTable = google.visualization.arrayToDataTable(chartDataArray);
-
-            // 지도 (색상 축 복구)
-            const map = new google.visualization.GeoChart(document.getElementById('regions_div'));
-            map.draw(dataTable, {
-                region: document.getElementById('mapRegion').value,
-                displayMode: 'regions',
-                colorAxis: { colors: ['#e2e8f0', '#6366f1', '#4338ca'], minValue: 0 }, // 진하기 표시
-                backgroundColor: 'transparent',
-                datalessRegionColor: '#f1f5f9',
-                defaultColor: '#f8fafc'
-            });
-
-            // 파이차트
-            const pie = new google.visualization.PieChart(document.getElementById('piechart_div'));
-            pie.draw(dataTable, {
-                pieHole: 0.5,
-                chartArea: { width: '100%', height: '80%' },
-                colors: ['#4f46e5', '#8b5cf6', '#10b981', '#f43f5e', '#f59e0b', '#06b6d4'],
-                legend: { position: 'bottom', textStyle: { fontSize: 10, bold: true, color: '#64748b' } },
-                pieSliceText: 'none',
-                backgroundColor: 'transparent'
-            });
+        async function loadCompanies() {
+            const { data } = await supabaseClient.from('kfintech_directory').select('*').order('created_at', { ascending: false });
+            companyData = data || [];
+            document.getElementById('total-companies').innerText = `Total: ${companyData.length}`;
+            renderCompanyTable(companyData);
         }
 
-        // 🔍 필터 로직 (미접촉 필터링 포함)
+        function renderCompanyTable(arr) {
+            document.getElementById('company-list').innerHTML = arr.map(c => `
+                <tr class="hover:bg-slate-50 text-xs border-b">
+                    <td class="p-4 font-bold text-indigo-600">${c.company_name}</td>
+                    <td class="p-4">${c.ceo_name || '-'}</td>
+                    <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded">${c.category}</span></td>
+                    <td class="p-4">${c.funding_amount || '-'}</td>
+                    <td class="p-4 text-emerald-600 font-bold">${c.revenue || '-'}</td>
+                    <td class="p-4 text-center"><button class="text-slate-400"><i class="fas fa-edit"></i></button></td>
+                </tr>`).join('');
+        }
+
+        function drawCharts(data) {
+            const counts = {}; data.forEach(inv => { if (inv.region) counts[inv.region] = (counts[inv.region] || 0) + 1; });
+            const dataTable = google.visualization.arrayToDataTable([['Country', 'Count'], ...Object.entries(counts)]);
+            const map = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            map.draw(dataTable, { region: document.getElementById('mapRegion').value, colorAxis: {colors: ['#e2e8f0', '#3b82f6', '#1e40af']} });
+            const pie = new google.visualization.PieChart(document.getElementById('piechart_div'));
+            pie.draw(dataTable, { pieHole: 0.4, chartArea: {width:'100%',height:'80%'} });
+        }
+
         function applyFilters() {
-            const cType = document.getElementById('filterContactType').value;
-            const country = document.getElementById('filterCountry').value;
-            const status = document.getElementById('filterStatus').value; // 🔥 미접촉 상태 필터
-            
+            const cT = document.getElementById('filterContactType').value;
+            const st = document.getElementById('filterStatus').value;
             const inS = document.getElementById('filterInStart').value;
             const inE = document.getElementById('filterInEnd').value;
             const coS = document.getElementById('filterContactStart').value;
             const coE = document.getElementById('filterContactEnd').value;
             
             let filtered = investorData.filter(inv => {
-                const dIn = inv.created_at ? inv.created_at.split('T')[0] : '';
-                const dCo = inv.contact_date || '';
-                const hasContacted = dCo && dCo.trim() !== '';
-
-                const matchType = !cType || (inv.contact_type || 'Investor') === cType;
-                const matchCountry = !country || inv.region === country;
-                
-                // 상태 필터 조건
-                let matchStatus = true;
-                if(status === 'uncontacted') matchStatus = !hasContacted;
-                if(status === 'contacted') matchStatus = hasContacted;
-
-                const matchIn = (!inS || dIn >= inS) && (!inE || dIn <= inE);
-                const matchCo = (!coS || dCo >= coS) && (!coE || dCo <= coE);
-
-                return matchType && matchCountry && matchStatus && matchIn && matchCo;
+                const dI = inv.created_at ? inv.created_at.split('T')[0] : '';
+                const dC = inv.contact_date || '';
+                return (!cT || (inv.contact_type || 'Investor') === cT) &&
+                       (!st || (st === 'uncontacted' && !dC)) &&
+                       (!inS || dI >= inS) && (!inE || dI <= inE) &&
+                       (!coS || dC >= coS) && (!coE || dC <= coE);
             });
-            
-            renderTable(filtered);
-            drawCharts(filtered);
+            renderTable(filtered); drawCharts(filtered);
         }
 
-        function populateFilterOptions(data) {
-            const countries = [...new Set(data.map(i => i.region).filter(Boolean))].sort();
-            document.getElementById('filterCountry').innerHTML = '<option value="">전체 국가</option>' + countries.map(c => `<option value="${c}">${c}</option>`).join('');
+        function resetFilters() { document.querySelectorAll('input, select').forEach(e => e.value = ''); renderTable(investorData); drawCharts(investorData); }
+        function switchView(v) {
+            document.getElementById('view-investor').classList.toggle('hidden', v !== 'investor');
+            document.getElementById('view-company').classList.toggle('hidden', v !== 'company');
+            document.getElementById('nav-investor').classList.toggle('bg-blue-600/20', v === 'investor');
+            document.getElementById('nav-company').classList.toggle('bg-blue-600/20', v === 'company');
         }
 
-        function resetFilters() {
-            document.querySelectorAll('input[type="date"], select').forEach(el => el.value = '');
-            renderTable(investorData); drawCharts(investorData);
-        }
-
-        // --- 모달 로직 (기존 유지) ---
         function openEditModal(id) {
             const inv = investorData.find(i => String(i.id) === String(id));
-            if(!inv) return;
             currentEditId = id;
             document.getElementById('editContactType').value = inv.contact_type || 'Investor';
             document.getElementById('editName').value = inv.full_name || '';
@@ -267,19 +232,13 @@
             document.getElementById('editModal').classList.remove('hidden');
         }
         function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
-
         async function submitEditForm(e) {
             e.preventDefault();
-            const updates = {
-                contact_type: document.getElementById('editContactType').value,
-                full_name: document.getElementById('editName').value,
-                contact_date: document.getElementById('editContactDate').value,
-                remarks: document.getElementById('editRemarks').value
-            };
-            const { error } = await supabaseClient.from('investor_inquiries').update(updates).eq('id', currentEditId);
-            if (error) alert('Save Failed'); else { closeEditModal(); loadInvestors(); }
+            const updates = { contact_type: document.getElementById('editContactType').value, full_name: document.getElementById('editName').value, contact_date: document.getElementById('editContactDate').value, remarks: document.getElementById('editRemarks').value };
+            await supabaseClient.from('investor_inquiries').update(updates).eq('id', currentEditId);
+            closeEditModal(); loadInvestors();
         }
-
+        async function saveDisplaySetting() { await supabaseClient.from('site_settings').upsert({ setting_key: 'directory_sort', setting_value: document.getElementById('frontendSortSelect').value }); alert('저장 완료'); }
         function logoutAdmin() { supabaseClient.auth.signOut(); window.location.reload(); }
         window.onload = checkSession;
     </script>
