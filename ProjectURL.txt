@@ -1,0 +1,14 @@
+ProjectURL
+https://kukeoddycuqtxmoctnoe.supabase.co
+
+Public Key
+sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ
+
+Anon Key
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1a2VvZGR5Y3VxdHhtb2N0bm9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNDM1NDUsImV4cCI6MjA4NzYxOTU0NX0.ONeXWBhSmOzw0fN9mRMh_i1rlG-XX_cwMlIyEtxBRcg
+
+
+
+admin
+murcury.seok@gmil.com
+admin!1234
