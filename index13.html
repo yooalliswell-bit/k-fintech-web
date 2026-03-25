@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Fintech Global Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .fade-in { animation: fadeIn 0.6s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .company-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; background-color: #fff; border: 1px solid #e2e8f0; }
+        .list-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; background-color: #fff; border: 1px solid #e2e8f0; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .progress-bar { height: 4px; background-color: #4f46e5; width: 0%; transition: width 20s linear; }
+        
+        .play-btn { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); color: #e11d48; } 100% { transform: scale(1); } }
+        
+        .award-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: #fffafb; border: 1px solid #fecdd3;
+            color: #e11d48; font-weight: 900; font-family: Arial, sans-serif;
+            padding: 0.1rem 0.4rem; border-radius: 0.375rem; letter-spacing: -0.025em;
+            margin-left: 0.5rem; font-size: 0.7rem; text-transform: uppercase;
+            box-shadow: 0 1px 2px rgba(225, 29, 72, 0.1);
+        }
+
+        .popup-anim { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                    <div id="nav-logo-container" class="flex items-center gap-2">
+                        <div class="bg-indigo-500 text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-indigo-500/30">K</div>
+                        <span id="nav-logo-text" class="font-bold text-xl tracking-tight">Fintech Hub</span>
+                    </div>
+                    <span class="bg-orange-500/20 text-orange-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-orange-500/30 whitespace-nowrap hidden sm:inline-block">
+                        <i class="fas fa-hammer mr-1"></i>테스트 사이트 입니다
+                    </span>
+                </div>
+
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#directory" class="text-slate-300 hover:text-white font-medium transition">Directory</a>
+                    <a href="#contact" class="text-slate-300 hover:text-white font-medium transition">Contact Us</a>
+                    <button onclick="openNoticeList()" class="relative flex items-center text-rose-400 hover:text-rose-300 font-bold transition">
+                        <i class="fas fa-bell mr-2"></i>Notice
+                        <span id="navNewBadge" class="hidden absolute -top-2 -right-3.5 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full animate-pulse shadow-sm">N</span>
+                    </button>
+                    <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition border border-slate-700"><i class="fas fa-lock mr-2"></i>Admin</a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-800 border-t border-slate-700">
+            <div class="px-4 py-3 space-y-2 flex flex-col">
+                <a href="#directory" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block py-2 text-base font-medium border-b border-slate-700">Directory</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white block py-2 text-base font-medium border-b border-slate-700">Contact Us</a>
+                <button onclick="openNoticeList(); toggleMobileMenu();" class="relative text-left text-rose-400 hover:text-rose-300 block w-full py-2 text-base font-bold border-b border-slate-700">
+                    <i class="fas fa-bell mr-2"></i>Notice
+                    <span id="mobileNavNewBadge" class="hidden absolute top-2 left-20 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full animate-pulse shadow-sm">N</span>
+                </button>
+                <a href="admin.html" class="text-indigo-400 hover:text-indigo-300 block py-2 text-base font-bold"><i class="fas fa-lock mr-2"></i>Admin Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative bg-slate-900 overflow-hidden">
+        <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full overflow-hidden opacity-30 pointer-events-none">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+            <div class="absolute top-12 -right-24 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+        </div>
+        
+        <div id="hero-content" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32 text-center opacity-0 transition-opacity duration-700">
+            <h1 id="main-title" class="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6"></h1>
+            <p id="main-subtitle" class="mt-4 max-w-2xl mx-auto text-xl text-slate-400 font-medium"></p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#directory" class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/30">
+                    Explore Directory <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#contact" class="bg-slate-800 text-white border border-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-700 transition">
+                    Partner with Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <section id="directory" class="py-20 bg-slate-50 relative">
+        <div id="timerBar" class="progress-bar absolute top-0 left-0"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Fintech Directory</h2>
+                    <p class="text-slate-500 mt-2 font-medium">Curated list of verified Korean fintech companies.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="pageIndicator" class="text-sm font-bold text-indigo-500 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100">Page 1 / 1</div>
+                    <div class="bg-white border border-slate-200 p-1 rounded-xl flex shadow-sm inline-flex">
+                        <button id="btnGrid" onclick="setViewMode('grid')" class="px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm bg-indigo-50 text-indigo-700 transition"><i class="fas fa-th-large"></i> Cards</button>
+                        <button id="btnList" onclick="setViewMode('list')" class="px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm text-slate-500 hover:text-slate-800 transition bg-transparent"><i class="fas fa-list"></i> List</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex overflow-x-auto gap-2 pb-4 mb-8 no-scrollbar" id="categoryFilters">
+                <button onclick="filterCategory('All')" class="cat-btn active whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-slate-900 text-white shadow-md border border-transparent">All</button>
+                <button onclick="filterCategory('Exchange')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Exchange</button>
+                <button onclick="filterCategory('Investment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Investment</button>
+                <button onclick="filterCategory('Security & Authentication')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Security</button>
+                <button onclick="filterCategory('Payment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Payment</button>
+                <button onclick="filterCategory('InsurTech')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">InsurTech</button>
+                <button onclick="filterCategory('Wealth Management')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Wealth Mgmt</button>
+                <button onclick="filterCategory('Crowdfunding')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Crowdfunding</button>
+                <button onclick="filterCategory('Fintech SI')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Fintech SI</button>
+                <button onclick="filterCategory('Cross-border')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Cross-border</button>
+                <button onclick="filterCategory('Others')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Others</button>
+            </div>
+
+            <div id="dataContainer" class="w-full min-h-[400px]">
+                <div class="flex justify-center items-center h-64 text-slate-400 font-medium">
+                    <i class="fas fa-spinner fa-spin mr-3 text-2xl text-indigo-500"></i> Loading Database...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-white border-t border-slate-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-indigo-600 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+                <div class="md:w-2/5 p-10 bg-slate-900 text-white flex flex-col justify-center relative overflow-hidden">
+                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-600/30 rounded-full mix-blend-screen filter blur-3xl"></div>
+                    <h3 class="text-3xl font-extrabold mb-4 relative z-10">Connect with K-Fintech</h3>
+                    <p class="text-slate-400 text-sm mb-8 relative z-10 font-medium">Leave your details and our global IR team will reach out to arrange tailored meetings with top Korean fintech startups.</p>
+                    <ul class="space-y-4 text-sm font-semibold relative z-10">
+                        <li class="flex items-center text-indigo-300"><i class="fas fa-check-circle mr-3"></i> Curated Deal Flow</li>
+                        <li class="flex items-center text-indigo-300"><i class="fas fa-check-circle mr-3"></i> 1:1 Meeting Setup</li>
+                        <li class="flex items-center text-indigo-300"><i class="fas fa-check-circle mr-3"></i> Latest IR Decks</li>
+                    </ul>
+                </div>
+                <div class="md:w-3/5 p-10 bg-white">
+                    <form id="investorForm" class="space-y-5" onsubmit="submitInquiry(event)">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Full Name *</label><input type="text" id="invName" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Organization *</label><input type="text" id="invOrg" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Work Email *</label><input type="email" id="invEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Phone Number</label><input type="text" id="invPhone" placeholder="+1 234 567 890" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Country *</label><select id="invCountry" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"><option value="">Select Country</option></select></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Interest Area</label><select id="invType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"><option value="Meeting">Request 1:1 Meeting</option><option value="IR">Request IR Materials</option><option value="Match">Startup Matching</option><option value="General">General Inquiry</option></select></div>
+                        </div>
+                        <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Message (Optional)</label><textarea id="invMessage" rows="3" placeholder="Tell us which sectors or companies you are interested in." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 focus:bg-white transition text-sm"></textarea></div>
+                        <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Send Request <i class="fas fa-paper-plane ml-2"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 py-12 border-t border-slate-800 text-center">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center">
+            <div id="footer-logo-container" class="flex justify-center items-center mb-4">
+                <div id="footer-title" class="text-xl font-bold text-white">K-Fintech Hub</div>
+            </div>
+            <p id="footer-copyright" class="text-slate-500 text-sm">© 2026 K-Fintech Global IR Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="popupContainer" class="fixed top-24 left-4 sm:left-8 z-[100] flex flex-col items-start gap-4 pointer-events-none">
+    </div>
+
+    <div id="noticeListModal" class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh] popup-anim">
+            <div class="p-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-2xl font-black text-slate-900"><i class="fas fa-bullhorn text-rose-500 mr-3"></i> Notice & News</h3>
+                <button onclick="closeNoticeList()" class="text-slate-400 hover:text-rose-500 transition"><i class="fas fa-times text-2xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50/50">
+                <ul id="frontNoticeList" class="space-y-4">
+                    <li class="text-center py-10"><i class="fas fa-spinner fa-spin text-2xl text-indigo-500"></i></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://kukeoddycuqtxmoctnoe.supabase.co';
+        const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let allCompanies = []; let filteredCompanies = []; let currentView = 'grid'; let currentCategory = 'All';
+        let sortSetting = 'created_at'; let currentPage = 0; let rollingInterval = null;
+
+        const globalCountries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        async function initPage() {
+            const countrySelect = document.getElementById('invCountry');
+            if (countrySelect) countrySelect.innerHTML = '<option value="">Select Country</option>' + globalCountries.map(c => `<option value="${c}">${c}</option>`).join('');
+            
+            const { data: settingData } = await supabaseClient.from('site_settings').select('*').eq('setting_key', 'directory_sort');
+            if (settingData && settingData.length > 0) sortSetting = settingData[0].setting_value; 
+
+            loadMainTexts();
+            checkNewNotice();
+            fetchCompanies();
+            loadFrontPopup();
+        }
+
+        // 🔥 수정됨: 하단 로고 이미지 출력 적용
+        async function loadMainTexts() {
+            const { data, error } = await supabaseClient.from('site_settings').select('*');
+            
+            let t1 = 'Discover the Future of';
+            let t2 = 'Korean Fintech';
+            let sub = 'Connect with top-tier innovators, from emerging Web3 startups to leading payment unicorns in South Korea.';
+            let headerLogoUrl = '';
+            let headerLogoText = 'Fintech Hub';
+            let footerLogoUrl = '';
+            let footerTitle = 'K-Fintech Hub';
+            let footerCopyright = '© 2026 K-Fintech Global IR Platform. All rights reserved.';
+
+            if(data && !error) {
+                const t1Obj = data.find(d => d.setting_key === 'main_title_1');
+                const t2Obj = data.find(d => d.setting_key === 'main_title_2');
+                const subObj = data.find(d => d.setting_key === 'main_hero_subtitle');
+                const headerLogoUrlObj = data.find(d => d.setting_key === 'header_logo_url');
+                const headerLogoTextObj = data.find(d => d.setting_key === 'header_logo_text');
+                const footerLogoUrlObj = data.find(d => d.setting_key === 'footer_logo_url');
+                const footerTitleObj = data.find(d => d.setting_key === 'footer_title_text');
+                const footerCopyrightObj = data.find(d => d.setting_key === 'footer_copyright_text');
+                
+                if(t1Obj) t1 = t1Obj.setting_value;
+                if(t2Obj) t2 = t2Obj.setting_value;
+                if(subObj) sub = subObj.setting_value;
+                if(headerLogoUrlObj) headerLogoUrl = headerLogoUrlObj.setting_value;
+                if(headerLogoTextObj) headerLogoText = headerLogoTextObj.setting_value;
+                if(footerLogoUrlObj) footerLogoUrl = footerLogoUrlObj.setting_value;
+                if(footerTitleObj) footerTitle = footerTitleObj.setting_value;
+                if(footerCopyrightObj) footerCopyright = footerCopyrightObj.setting_value;
+            }
+
+            const titleEl = document.getElementById('main-title');
+            if(titleEl) titleEl.innerHTML = `${t1} <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">${t2}</span>`;
+            
+            const subEl = document.getElementById('main-subtitle');
+            if(subEl) subEl.innerText = sub;
+
+            const navLogoContainer = document.getElementById('nav-logo-container');
+            if(navLogoContainer) {
+                if (headerLogoUrl) {
+                    navLogoContainer.innerHTML = `<img src="${headerLogoUrl}" alt="K-Fintech Logo" class="h-10 object-contain">`;
+                } else {
+                    navLogoContainer.innerHTML = `<div class="bg-indigo-500 text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-indigo-500/30">K</div><span id="nav-logo-text" class="font-bold text-xl tracking-tight">${headerLogoText}</span>`;
+                }
+            }
+
+            // 하단 로고 렌더링
+            const footerLogoContainer = document.getElementById('footer-logo-container');
+            if(footerLogoContainer) {
+                if (footerLogoUrl) {
+                    footerLogoContainer.innerHTML = `<img src="${footerLogoUrl}" alt="K-Fintech Footer Logo" class="h-12 object-contain opacity-90 hover:opacity-100 transition">`;
+                } else {
+                    footerLogoContainer.innerHTML = `<div id="footer-title" class="text-xl font-bold text-white">${footerTitle}</div>`;
+                }
+            }
+
+            const footerCopyrightEl = document.getElementById('footer-copyright');
+            if(footerCopyrightEl) footerCopyrightEl.innerText = footerCopyright;
+
+            document.getElementById('hero-content').classList.remove('opacity-0');
+        }
+
+        async function checkNewNotice() {
+            const { data } = await supabaseClient.from('notices').select('created_at').eq('is_active', true).order('created_at', { ascending: false }).limit(1);
+            if (data && data.length > 0) {
+                const latestDate = new Date(data[0].created_at);
+                const diffDays = Math.ceil(Math.abs(new Date() - latestDate) / (1000 * 60 * 60 * 24));
+                if (diffDays <= 1) {
+                    document.getElementById('navNewBadge').classList.remove('hidden'); 
+                    const mobileBadge = document.getElementById('mobileNavNewBadge');
+                    if(mobileBadge) mobileBadge.classList.remove('hidden');
+                }
+            }
+        }
+
+        async function loadFrontPopup() {
+            const hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
+            const today = new Date().toDateString();
+
+            const { data } = await supabaseClient.from('notices')
+                .select('*')
+                .eq('is_active', true)
+                .eq('is_popup', true)
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (data && data.length > 0) {
+                const container = document.getElementById('popupContainer');
+                container.innerHTML = ''; 
+
+                data.forEach((popup) => {
+                    if (hiddenPopups[popup.id] === today) return;
+
+                    let mediaHtml = '';
+                    if (popup.attachment_url) {
+                        const ext = popup.attachment_url.split('.').pop().toLowerCase();
+                        if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+                            mediaHtml = `<img src="${popup.attachment_url}" class="w-full h-auto object-cover max-h-40 border-b border-slate-100 bg-slate-50 rounded-t-2xl">`;
+                        } else {
+                            mediaHtml = `<div class="p-4 border-b border-slate-100"><a href="${popup.attachment_url}" target="_blank" class="inline-flex items-center justify-center w-full bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition"><i class="fas fa-file-download mr-2"></i> 첨부파일 다운로드</a></div>`;
+                        }
+                    }
+
+                    const popupEl = document.createElement('div');
+                    popupEl.className = `bg-white rounded-2xl shadow-2xl border border-slate-200 w-80 max-w-[90vw] pointer-events-auto popup-anim flex flex-col transition-all`;
+                    popupEl.id = `popup-${popup.id}`;
+
+                    popupEl.innerHTML = `
+                        ${mediaHtml}
+                        <div class="p-5 flex-1">
+                            <h3 class="text-base font-black text-slate-900 mb-2 tracking-tight flex items-center"><i class="fas fa-bell text-rose-500 mr-2 text-sm"></i>${popup.title}</h3>
+                            <p class="text-slate-600 text-xs whitespace-pre-line leading-relaxed font-medium line-clamp-4">${popup.content || ''}</p>
+                        </div>
+                        <div class="bg-slate-50 border-t border-slate-100 p-3 flex justify-between items-center rounded-b-2xl mt-auto">
+                            <label class="flex items-center cursor-pointer group ml-2">
+                                <input type="checkbox" id="hideToday-${popup.id}" class="w-4 h-4 rounded border-slate-300 text-indigo-500 focus:ring-indigo-500 cursor-pointer">
+                                <span class="ml-2 text-[11px] text-slate-500 font-bold group-hover:text-slate-800 transition">오늘 하루 닫기</span>
+                            </label>
+                            <button onclick="closePopup('${popup.id}')" class="px-4 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-black transition shadow-md">닫기</button>
+                        </div>
+                    `;
+                    container.appendChild(popupEl);
+                });
+            }
+        }
+
+        function closePopup(id) {
+            const checkbox = document.getElementById(`hideToday-${id}`);
+            if (checkbox && checkbox.checked) {
+                let hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
+                hiddenPopups[id] = new Date().toDateString();
+                localStorage.setItem('hiddenPopups', JSON.stringify(hiddenPopups));
+            }
+            
+            const popupEl = document.getElementById(`popup-${id}`);
+            if (popupEl) {
+                popupEl.style.opacity = '0';
+                popupEl.style.transform = 'scale(0.95)';
+                setTimeout(() => popupEl.remove(), 300); 
+            }
+        }
+
+        async function openNoticeList() {
+            document.getElementById('noticeListModal').classList.remove('hidden');
+            const listEl = document.getElementById('frontNoticeList');
+            const { data } = await supabaseClient.from('notices').select('*').eq('is_active', true).order('created_at', { ascending: false });
+            
+            if(!data || data.length === 0) { listEl.innerHTML = '<li class="text-center text-slate-500 py-10 font-bold">등록된 공지사항이 없습니다.</li>'; return; }
+            
+            listEl.innerHTML = data.map(n => {
+                const isNew = Math.ceil(Math.abs(new Date() - new Date(n.created_at)) / (1000 * 60 * 60 * 24)) <= 1; 
+                const fileBtn = n.attachment_url ? `<a href="${n.attachment_url}" target="_blank" class="mt-4 inline-flex items-center text-xs bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-2 rounded-xl font-bold hover:bg-indigo-100 transition"><i class="fas fa-paperclip mr-2"></i> 첨부파일 보기</a>` : '';
+                const newBadgeHtml = isNew ? `<span class="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded ml-2 align-middle shadow-sm animate-pulse">NEW</span>` : '';
+
+                return `<li class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <h4 class="font-black text-slate-900 text-lg">${n.title} ${newBadgeHtml} ${n.is_popup ? '<span class="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded border border-rose-200 ml-2 align-middle shadow-sm">POPUP</span>' : ''}</h4>
+                        <span class="text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">${n.created_at.split('T')[0]}</span>
+                    </div>
+                    <p class="text-sm text-slate-600 whitespace-pre-line leading-relaxed font-medium">${n.content || ''}</p>
+                    ${fileBtn}
+                </li>`;
+            }).join('');
+        }
+        function closeNoticeList() { document.getElementById('noticeListModal').classList.add('hidden'); }
+
+        async function fetchCompanies() {
+            const { data, error } = await supabaseClient.from('kfintech_directory').select('*');
+            if (error) { document.getElementById('dataContainer').innerHTML = `<div class="text-center text-red-500 py-10 font-bold">Error loading database.</div>`; return; }
+            allCompanies = data || []; applySorting(allCompanies); filteredCompanies = [...allCompanies]; currentPage = 0; renderCompanies();
+        }
+
+        function parseMoneyToNumber(str) {
+            if (!str || str === '-' || str === '') return 0;
+            let val = String(str).replace(/[^0-9.MBKkmb]/g, ''); let numMatch = val.match(/[0-9.]+/); if (!numMatch) return 0;
+            let num = parseFloat(numMatch[0]); let mult = val.match(/[MBKkmb]/i);
+            if (mult) { let m = mult[0].toUpperCase(); if (m === 'B') num *= 1000000000; else if (m === 'M') num *= 1000000; else if (m === 'K') num *= 1000; }
+            return num;
+        }
+
+        function applySorting(companiesList) {
+            if (sortSetting === 'revenue') { companiesList.sort((a, b) => parseMoneyToNumber(b.revenue) - parseMoneyToNumber(a.revenue)); } 
+            else if (sortSetting === 'funding') { companiesList.sort((a, b) => parseMoneyToNumber(b.funding_amount) - parseMoneyToNumber(a.funding_amount)); } 
+            else { companiesList.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); }
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                if(btn.getAttribute('onclick').includes(`'${cat}'`)) { btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200'); btn.classList.add('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); }
+            });
+            if (cat === 'All') { filteredCompanies = [...allCompanies]; } 
+            else {
+                filteredCompanies = allCompanies.filter(c => {
+                    if (cat === 'Others') return !['Exchange','Investment','Security & Authentication','Payment','InsurTech','Wealth Management','Crowdfunding','Fintech SI','Cross-border Remittance', 'Cross-border'].includes(c.category);
+                    if (cat === 'Cross-border') return c.category && c.category.includes('Cross-border');
+                    return c.category && c.category.includes(cat);
+                });
+            }
+            currentPage = 0; renderCompanies();
+        }
+
+        function setViewMode(mode) {
+            currentView = mode;
+            const btnGrid = document.getElementById('btnGrid'); const btnList = document.getElementById('btnList');
+            if (mode === 'grid') { btnGrid.className = "px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm bg-indigo-50 text-indigo-700 transition"; btnList.className = "px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm text-slate-500 hover:text-slate-800 transition bg-transparent"; } 
+            else { btnList.className = "px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm bg-indigo-50 text-indigo-700 transition"; btnGrid.className = "px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm text-slate-500 hover:text-slate-800 transition bg-transparent"; }
+            currentPage = 0; renderCompanies();
+        }
+
+        function startRollingTimer() {
+            if (rollingInterval) clearInterval(rollingInterval);
+            const bar = document.getElementById('timerBar'); bar.style.transition = 'none'; bar.style.width = '0%';
+            setTimeout(() => { bar.style.transition = 'width 20s linear'; bar.style.width = '100%'; }, 50);
+            rollingInterval = setInterval(() => {
+                const itemsPerPage = currentView === 'grid' ? 6 : 10;
+                const maxPage = Math.ceil(filteredCompanies.length / itemsPerPage);
+                if (maxPage > 1) { currentPage++; if (currentPage >= maxPage) currentPage = 0; renderCompanies(); }
+            }, 20000); 
+        }
+
+        function renderCompanies() {
+            const container = document.getElementById('dataContainer');
+            if (filteredCompanies.length === 0) {
+                if (rollingInterval) clearInterval(rollingInterval);
+                document.getElementById('timerBar').style.width = '0%'; document.getElementById('pageIndicator').innerText = `Page 0 / 0`;
+                container.innerHTML = `<div class="text-center py-20 text-slate-400 font-bold bg-white rounded-2xl border border-slate-100 shadow-sm"><i class="fas fa-search text-3xl mb-3 text-slate-300 block"></i>No companies found in this category.</div>`; return;
+            }
+
+            const itemsPerPage = currentView === 'grid' ? 6 : 10;
+            const maxPage = Math.ceil(filteredCompanies.length / itemsPerPage);
+            const displayData = filteredCompanies.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage + 1} / ${maxPage}`;
+
+            if (currentView === 'grid') {
+                let html = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" id="cardContainer">`;
+                displayData.forEach(comp => {
+                    let logoHtml = comp.logo_url ? `<img src="${comp.logo_url}" alt="logo" class="company-logo" onerror="this.src='https://via.placeholder.com/48?text=Logo'">` : `<div class="company-logo flex items-center justify-center text-slate-300 text-xl"><i class="fas fa-building"></i></div>`;
+                    let stageBadge = comp.funding_stage ? `<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-1 rounded border border-slate-200">${comp.funding_stage}</span>` : '';
+                    let badgeHtml = comp.badge_text ? `<span class="award-badge"><i class="fas fa-award mr-1"></i>${comp.badge_text}</span>` : '';
+                    let revHtml = comp.revenue ? `<div class="text-xs font-bold text-emerald-600 mb-1"><i class="fas fa-money-bill-wave mr-1"></i> Revenue: ${comp.revenue}</div>` : '';
+                    let amountHtml = comp.funding_amount ? `<div class="text-xs font-bold text-indigo-600"><i class="fas fa-chart-line mr-1"></i> Funding: ${comp.funding_amount}</div>` : '';
+                    let linksHtml = '';
+                    if(comp.website) linksHtml += `<a href="${comp.website}" target="_blank" class="text-slate-400 hover:text-indigo-600 transition mx-1" title="Website"><i class="fas fa-globe text-lg"></i></a>`;
+                    if(comp.ir_deck_url) linksHtml += `<a href="${comp.ir_deck_url}" target="_blank" class="text-slate-400 hover:text-red-500 transition mx-1" title="IR Deck (PDF)"><i class="fas fa-file-pdf text-lg"></i></a>`;
+                    if(comp.video_url) linksHtml += `<a href="${comp.video_url}" target="_blank" class="text-rose-500 hover:text-rose-600 transition mx-1 play-btn" title="Watch Pitch Video"><i class="fas fa-play-circle text-2xl"></i></a>`;
+
+                    html += `<div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 group flex flex-col h-full"><div class="flex justify-between items-start mb-4"><div class="flex items-center gap-3">${logoHtml}<div><div class="flex items-center"><h3 class="font-extrabold text-lg text-slate-900 group-hover:text-indigo-600 transition">${comp.company_name}</h3>${badgeHtml}</div><p class="text-xs text-slate-500 font-medium">${comp.ceo_name ? 'CEO: '+comp.ceo_name : ''}</p></div></div><div class="flex items-center">${linksHtml}</div></div><div class="mb-3 flex flex-wrap gap-2"><span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-2.5 py-1 rounded-md border border-indigo-100">${comp.category}</span>${stageBadge}</div><p class="text-sm text-slate-600 font-medium mb-4 flex-grow line-clamp-3 leading-relaxed">${comp.keywords ? `<span class="text-indigo-400 block mb-1 text-xs uppercase tracking-wider font-bold">${comp.keywords}</span>` : ''}</p><div class="pt-4 border-t border-slate-50 flex justify-between items-end"><div class="flex flex-col">${revHtml}${amountHtml}</div><button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" class="text-xs font-bold text-slate-500 hover:text-indigo-600 transition mb-1">Contact <i class="fas fa-chevron-right ml-1 text-[10px]"></i></button></div></div>`;
+                });
+                html += `</div>`; container.innerHTML = html;
+            } else {
+                let html = `<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden fade-in"><div class="overflow-x-auto"><table class="w-full text-left text-sm border-collapse"><thead><tr class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200"><th class="p-4 w-12 text-center">No</th><th class="p-4 nowrap w-64">Company</th><th class="p-4 nowrap">Category</th><th class="p-4 nowrap">Stage & Financials</th><th class="p-4 nowrap w-1/3">Key Tech</th><th class="p-4 nowrap text-right">Links</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700">`;
+                displayData.forEach((comp, idx) => {
+                    let logoHtml = comp.logo_url ? `<img src="${comp.logo_url}" alt="logo" class="list-logo inline-block mr-3" onerror="this.src='https://via.placeholder.com/32?text=Logo'">` : `<div class="list-logo inline-flex items-center justify-center mr-3 text-slate-300"><i class="fas fa-building"></i></div>`;
+                    let badgeHtml = comp.badge_text ? `<span class="award-badge"><i class="fas fa-award mr-1"></i>${comp.badge_text}</span>` : '';
+                    let financialStr = [comp.funding_stage, comp.revenue ? `<span class="text-emerald-600 font-bold">Rev: ${comp.revenue}</span>` : '', comp.funding_amount ? `Fund: ${comp.funding_amount}` : ''].filter(Boolean).join(' / '); if(!financialStr) financialStr = '-';
+                    let linksHtml = '';
+                    if(comp.website) linksHtml += `<a href="${comp.website}" target="_blank" class="text-indigo-500 hover:text-indigo-700 mx-2 font-medium" title="Website">Web</a>`;
+                    if(comp.ir_deck_url) linksHtml += `<a href="${comp.ir_deck_url}" target="_blank" class="text-slate-500 hover:text-slate-800 mx-2 font-medium" title="IR Deck">Deck</a>`;
+                    if(comp.video_url) linksHtml += `<a href="${comp.video_url}" target="_blank" class="text-rose-500 hover:text-rose-700 mx-2 font-medium play-btn inline-block" title="Play Video"><i class="fas fa-play-circle"></i> Video</a>`;
+                    let realRank = (currentPage * itemsPerPage) + idx + 1;
+                    html += `<tr class="hover:bg-slate-50/50 transition"><td class="p-4 text-center text-slate-400 font-mono text-xs">${realRank}</td><td class="p-4 font-extrabold text-slate-800 flex items-center">${logoHtml} ${comp.company_name} ${badgeHtml}</td><td class="p-4"><span class="bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md">${comp.category}</span></td><td class="p-4 text-slate-600 font-medium text-xs">${financialStr}</td><td class="p-4 text-slate-500 text-xs truncate-text" title="${comp.keywords || ''}">${comp.keywords || '-'}</td><td class="p-4 text-right">${linksHtml || '-'}</td></tr>`;
+                });
+                html += `</tbody></table></div></div>`; container.innerHTML = html;
+            }
+
+            if (maxPage > 1) { startRollingTimer(); } else { if (rollingInterval) clearInterval(rollingInterval); document.getElementById('timerBar').style.width = '100%'; }
+        }
+
+        async function submitInquiry(e) {
+            e.preventDefault(); 
+            const btn = document.getElementById('submitBtn'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...'; btn.disabled = true;
+            const newInquiry = { contact_type: 'Investor', full_name: document.getElementById('invName').value, organization: document.getElementById('invOrg').value, work_email: document.getElementById('invEmail').value, phone: document.getElementById('invPhone').value, region: document.getElementById('invCountry').value, interest_area: document.getElementById('invType').value, message: document.getElementById('invMessage').value, contact_date: '' };
+            const { error } = await supabaseClient.from('investor_inquiries').insert([newInquiry]);
+            if (error) { console.error("Supabase Error:", error); alert('Error submitting form. Please check your network or try again.'); btn.innerHTML = 'Send Request <i class="fas fa-paper-plane ml-2"></i>'; btn.disabled = false; } 
+            else {
+                btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-lg transition"; btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Successfully Submitted!'; document.getElementById('investorForm').reset();
+                setTimeout(() => { btn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5"; btn.innerHTML = 'Send Request <i class="fas fa-paper-plane ml-2"></i>'; btn.disabled = false; }, 3000);
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (rollingInterval) clearInterval(rollingInterval);
+        });
+
+        window.onload = initPage;
+    </script>
+</body>
+</html>
