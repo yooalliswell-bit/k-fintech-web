@@ -25,8 +25,8 @@
             display: inline-flex; align-items: center; justify-content: center;
             background-color: #fffafb; border: 1px solid #fecdd3;
             color: #e11d48; font-weight: 900; font-family: Arial, sans-serif;
-            padding: 0.1rem 0.4rem; border-radius: 0.375rem; letter-spacing: -0.025em;
-            margin-left: 0.5rem; font-size: 0.7rem; text-transform: uppercase;
+            padding: 0.05rem 0.3rem; border-radius: 0.25rem; letter-spacing: -0.025em;
+            margin-left: 0.5rem; font-size: 0.55rem; text-transform: uppercase;
             box-shadow: 0 1px 2px rgba(225, 29, 72, 0.1);
         }
 
@@ -41,14 +41,8 @@
             <div class="flex justify-between h-20 items-center">
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
                     <div id="nav-logo-container" class="flex items-center gap-2">
-                        <div class="bg-indigo-500 text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-indigo-500/30">K</div>
-                        <span id="nav-logo-text" class="font-bold text-xl tracking-tight">Fintech Hub</span>
+                        <!-- 로직으로 동적 렌더링됨 -->
                     </div>
-
-                    <!-- <span class="bg-orange-500/20 text-orange-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-orange-500/30 whitespace-nowrap hidden sm:inline-block">
-                        <i class="fas fa-hammer mr-1"></i>테스트 사이트 입니다
-                    </span> -->
-
                 </div>
 
                 <div class="hidden md:flex space-x-8 items-center">
@@ -107,7 +101,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                 <div>
-                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Fintech Directory</h2>
+                    <!-- 🔥 뱃지 드롭다운 위치 이동 (제목 옆으로 나란히 배치) -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Fintech Directory</h2>
+                        <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-rose-200 shadow-sm whitespace-nowrap">
+                            <i class="fas fa-award text-rose-500 text-sm"></i>
+                            <select id="badgeFilterSelect" onchange="applyAllFilters()" class="bg-transparent text-sm font-bold text-rose-600 outline-none cursor-pointer">
+                                <option value="All">All Badges</option>
+                                <!-- JS로 자동 생성됨 -->
+                            </select>
+                        </div>
+                    </div>
                     <p class="text-slate-500 mt-2 font-medium">Curated list of verified Korean fintech companies.</p>
                 </div>
                 <div class="flex items-center gap-4">
@@ -119,18 +123,19 @@
                 </div>
             </div>
 
+            <!-- 기존 카테고리 필터 레이아웃 원상복구 -->
             <div class="flex overflow-x-auto gap-2 pb-4 mb-8 no-scrollbar" id="categoryFilters">
-                <button onclick="filterCategory('All')" class="cat-btn active whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-slate-900 text-white shadow-md border border-transparent">All</button>
-                <button onclick="filterCategory('Exchange')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Exchange</button>
-                <button onclick="filterCategory('Investment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Investment</button>
-                <button onclick="filterCategory('Security & Authentication')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Security</button>
-                <button onclick="filterCategory('Payment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Payment</button>
-                <button onclick="filterCategory('InsurTech')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">InsurTech</button>
-                <button onclick="filterCategory('Wealth Management')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Wealth Mgmt</button>
-                <button onclick="filterCategory('Crowdfunding')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Crowdfunding</button>
-                <button onclick="filterCategory('Fintech SI')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Fintech SI</button>
-                <button onclick="filterCategory('Cross-border')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Cross-border</button>
-                <button onclick="filterCategory('Others')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Others</button>
+                <button onclick="setCategoryFilter('All')" class="cat-btn active whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-slate-900 text-white shadow-md border border-transparent">All</button>
+                <button onclick="setCategoryFilter('Exchange')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Exchange</button>
+                <button onclick="setCategoryFilter('Investment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Investment</button>
+                <button onclick="setCategoryFilter('Security & Authentication')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Security</button>
+                <button onclick="setCategoryFilter('Payment')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Payment</button>
+                <button onclick="setCategoryFilter('InsurTech')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">InsurTech</button>
+                <button onclick="setCategoryFilter('Wealth Management')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Wealth Mgmt</button>
+                <button onclick="setCategoryFilter('Crowdfunding')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Crowdfunding</button>
+                <button onclick="setCategoryFilter('Fintech SI')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Fintech SI</button>
+                <button onclick="setCategoryFilter('Cross-border')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Cross-border</button>
+                <button onclick="setCategoryFilter('Others')" class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition bg-white border border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600">Others</button>
             </div>
 
             <div id="dataContainer" class="w-full min-h-[400px]">
@@ -178,8 +183,8 @@
 
     <footer class="bg-slate-900 py-12 border-t border-slate-800 text-center">
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center">
-            <div id="footer-logo-container" class="flex justify-center items-center mb-4">
-                <div id="footer-title" class="text-xl font-bold text-white">K-Fintech Hub</div>
+            <div id="footer-logo-container" class="flex justify-center items-center mb-4 gap-3">
+                <!-- 로직으로 동적 렌더링됨 -->
             </div>
             <p id="footer-copyright" class="text-slate-500 text-sm">© 2026 K-Fintech Global IR Platform. All rights reserved.</p>
         </div>
@@ -208,7 +213,8 @@
         const supabaseKey = 'sb_publishable_WibJHvbs96cfkVVnrFGicQ_xK3ZiMqJ';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let allCompanies = []; let filteredCompanies = []; let currentView = 'grid'; let currentCategory = 'All';
+        let allCompanies = []; let filteredCompanies = []; let currentView = 'grid'; 
+        let currentCategory = 'All'; 
         let sortSetting = 'created_at'; let currentPage = 0; let rollingInterval = null;
 
         const globalCountries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
@@ -231,17 +237,13 @@
             loadFrontPopup();
         }
 
-        // 🔥 수정됨: 하단 로고 이미지 출력 적용
         async function loadMainTexts() {
             const { data, error } = await supabaseClient.from('site_settings').select('*');
             
-            let t1 = 'Discover the Future of';
-            let t2 = 'Korean Fintech';
+            let t1 = 'Discover the Future of'; let t2 = 'Korean Fintech';
             let sub = 'Connect with top-tier innovators, from emerging Web3 startups to leading payment unicorns in South Korea.';
-            let headerLogoUrl = '';
-            let headerLogoText = 'Fintech Hub';
-            let footerLogoUrl = '';
-            let footerTitle = 'K-Fintech Hub';
+            let headerLogoUrl = ''; let headerLogoText = 'Fintech Hub';
+            let footerLogoUrl = ''; let footerTitle = 'K-Fintech Hub';
             let footerCopyright = '© 2026 K-Fintech Global IR Platform. All rights reserved.';
 
             if(data && !error) {
@@ -272,21 +274,30 @@
 
             const navLogoContainer = document.getElementById('nav-logo-container');
             if(navLogoContainer) {
+                let hHtml = '';
                 if (headerLogoUrl) {
-                    navLogoContainer.innerHTML = `<img src="${headerLogoUrl}" alt="K-Fintech Logo" class="h-10 object-contain">`;
+                    hHtml += `<img src="${headerLogoUrl}" alt="K-Fintech Logo" class="h-10 object-contain">`;
                 } else {
-                    navLogoContainer.innerHTML = `<div class="bg-indigo-500 text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-indigo-500/30">K</div><span id="nav-logo-text" class="font-bold text-xl tracking-tight">${headerLogoText}</span>`;
+                    hHtml += `<div class="bg-indigo-500 text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-indigo-500/30">K</div>`;
                 }
+                
+                if (headerLogoText) {
+                    hHtml += `<span id="nav-logo-text" class="font-bold text-xl tracking-tight">${headerLogoText}</span>`;
+                }
+                navLogoContainer.innerHTML = hHtml;
             }
 
-            // 하단 로고 렌더링
             const footerLogoContainer = document.getElementById('footer-logo-container');
             if(footerLogoContainer) {
+                let fHtml = '';
                 if (footerLogoUrl) {
-                    footerLogoContainer.innerHTML = `<img src="${footerLogoUrl}" alt="K-Fintech Footer Logo" class="h-12 object-contain opacity-90 hover:opacity-100 transition">`;
-                } else {
-                    footerLogoContainer.innerHTML = `<div id="footer-title" class="text-xl font-bold text-white">${footerTitle}</div>`;
+                    fHtml += `<img src="${footerLogoUrl}" alt="K-Fintech Footer Logo" class="h-12 object-contain opacity-90 hover:opacity-100 transition">`;
                 }
+                
+                if (footerTitle) {
+                    fHtml += `<div id="footer-title" class="text-xl font-bold text-white">${footerTitle}</div>`;
+                }
+                footerLogoContainer.innerHTML = fHtml;
             }
 
             const footerCopyrightEl = document.getElementById('footer-copyright');
@@ -312,12 +323,7 @@
             const hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
             const today = new Date().toDateString();
 
-            const { data } = await supabaseClient.from('notices')
-                .select('*')
-                .eq('is_active', true)
-                .eq('is_popup', true)
-                .order('created_at', { ascending: false })
-                .limit(3);
+            const { data } = await supabaseClient.from('notices').select('*').eq('is_active', true).eq('is_popup', true).order('created_at', { ascending: false }).limit(3);
 
             if (data && data.length > 0) {
                 const container = document.getElementById('popupContainer');
@@ -366,13 +372,8 @@
                 hiddenPopups[id] = new Date().toDateString();
                 localStorage.setItem('hiddenPopups', JSON.stringify(hiddenPopups));
             }
-            
             const popupEl = document.getElementById(`popup-${id}`);
-            if (popupEl) {
-                popupEl.style.opacity = '0';
-                popupEl.style.transform = 'scale(0.95)';
-                setTimeout(() => popupEl.remove(), 300); 
-            }
+            if (popupEl) { popupEl.style.opacity = '0'; popupEl.style.transform = 'scale(0.95)'; setTimeout(() => popupEl.remove(), 300); }
         }
 
         async function openNoticeList() {
@@ -402,7 +403,17 @@
         async function fetchCompanies() {
             const { data, error } = await supabaseClient.from('kfintech_directory').select('*');
             if (error) { document.getElementById('dataContainer').innerHTML = `<div class="text-center text-red-500 py-10 font-bold">Error loading database.</div>`; return; }
-            allCompanies = data || []; applySorting(allCompanies); filteredCompanies = [...allCompanies]; currentPage = 0; renderCompanies();
+            
+            allCompanies = data || []; 
+            applySorting(allCompanies); 
+            
+            const badges = [...new Set(allCompanies.map(c => c.badge_text).filter(Boolean))].sort();
+            const badgeSelect = document.getElementById('badgeFilterSelect');
+            if (badgeSelect) {
+                badgeSelect.innerHTML = '<option value="All">All Badges</option>' + badges.map(b => `<option value="${b}">${b}</option>`).join('');
+            }
+
+            applyAllFilters();
         }
 
         function parseMoneyToNumber(str) {
@@ -419,21 +430,48 @@
             else { companiesList.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); }
         }
 
-        function filterCategory(cat) {
+        function setCategoryFilter(cat) {
             currentCategory = cat;
+            
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-                if(btn.getAttribute('onclick').includes(`'${cat}'`)) { btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200'); btn.classList.add('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); }
+                btn.classList.remove('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); 
+                btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                if(btn.getAttribute('onclick').includes(`'${cat}'`)) { 
+                    btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200'); 
+                    btn.classList.add('bg-slate-900', 'text-white', 'shadow-md', 'border-transparent'); 
+                }
             });
-            if (cat === 'All') { filteredCompanies = [...allCompanies]; } 
-            else {
-                filteredCompanies = allCompanies.filter(c => {
-                    if (cat === 'Others') return !['Exchange','Investment','Security & Authentication','Payment','InsurTech','Wealth Management','Crowdfunding','Fintech SI','Cross-border Remittance', 'Cross-border'].includes(c.category);
-                    if (cat === 'Cross-border') return c.category && c.category.includes('Cross-border');
-                    return c.category && c.category.includes(cat);
-                });
-            }
-            currentPage = 0; renderCompanies();
+
+            applyAllFilters();
+        }
+
+        function applyAllFilters() {
+            const badgeVal = document.getElementById('badgeFilterSelect').value;
+            
+            filteredCompanies = allCompanies.filter(c => {
+                let matchCategory = false;
+                if (currentCategory === 'All') {
+                    matchCategory = true;
+                } else if (currentCategory === 'Others') {
+                    matchCategory = !['Exchange','Investment','Security & Authentication','Payment','InsurTech','Wealth Management','Crowdfunding','Fintech SI','Cross-border Remittance', 'Cross-border'].includes(c.category);
+                } else if (currentCategory === 'Cross-border') {
+                    matchCategory = c.category && c.category.includes('Cross-border');
+                } else {
+                    matchCategory = c.category && c.category.includes(currentCategory);
+                }
+
+                let matchBadge = false;
+                if (badgeVal === 'All') {
+                    matchBadge = true;
+                } else {
+                    matchBadge = c.badge_text === badgeVal;
+                }
+
+                return matchCategory && matchBadge;
+            });
+
+            currentPage = 0; 
+            renderCompanies();
         }
 
         function setViewMode(mode) {
@@ -516,10 +554,7 @@
             }
         }
 
-        window.addEventListener('beforeunload', () => {
-            if (rollingInterval) clearInterval(rollingInterval);
-        });
-
+        window.addEventListener('beforeunload', () => { if (rollingInterval) clearInterval(rollingInterval); });
         window.onload = initPage;
     </script>
 </body>

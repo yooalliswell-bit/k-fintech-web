@@ -61,7 +61,6 @@
             </header>
 
             <div id="view-investor" class="fade-in-section">
-                
                 <section class="bg-white rounded-3xl shadow-xl p-8 mb-10 border border-gray-100">
                     <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
                         <h2 class="text-2xl font-bold text-slate-900 flex items-center"><i class="fas fa-chart-pie mr-3 text-blue-500"></i> 통합 대시보드 분석</h2>
@@ -91,7 +90,6 @@
                         <h2 class="text-2xl font-bold">통합 Contact DB 리스트 <span id="total-investors" class="ml-3 text-lg font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-tighter"></span></h2>
                         <div class="flex space-x-2">
                             <button onclick="deleteSelectedInvestors()" class="admin-only bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition">선택 삭제</button>
-                            
                             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
                             <button onclick="downloadCrmTemplate()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 transition">예제 양식</button>
                             <button onclick="downloadExcel()" class="bg-white border-2 border-blue-600 text-blue-600 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-50">다운로드</button>
@@ -136,6 +134,7 @@
                 </section>
             </div>
 
+            <!-- [VIEW 2] 기업 DB 관리 -->
             <div id="view-company" class="hidden fade-in-section">
                 <section class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
                     <div class="flex justify-between items-center mb-6 pb-6 border-b">
@@ -149,6 +148,19 @@
                             <button onclick="openCompanyModal()" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-700 transition">+ 신규 등록</button>
                         </div>
                     </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl mb-6 border flex items-center gap-4 text-xs font-bold">
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-rose-600"><i class="fas fa-award mr-1"></i>뱃지 필터</label>
+                            <select id="filterCompanyBadge" onchange="applyCompanyFilters()" class="bg-white border border-slate-300 text-slate-700 rounded px-3 py-1.5 outline-none focus:border-indigo-500 transition shadow-sm">
+                                <option value="">전체 보기 (All)</option>
+                            </select>
+                        </div>
+                        <div class="ml-auto text-slate-500 font-medium">
+                            <span id="filtered-company-count"></span>
+                        </div>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-gray-50 border-y border-slate-200">
@@ -170,9 +182,9 @@
                 </section>
             </div>
 
+            <!-- [VIEW 3] 공지 및 사이트 설정 -->
             <div id="view-site" class="hidden fade-in-section">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    
                     <section class="bg-white rounded-3xl shadow-xl p-8 border border-indigo-100 shadow-indigo-50 h-fit relative">
                         <div id="adminOverlay" class="hidden absolute inset-0 z-50 bg-white/70 backdrop-blur-sm rounded-3xl flex items-center justify-center">
                             <div class="bg-slate-800 text-white px-6 py-3 rounded-full font-bold shadow-xl flex items-center">
@@ -187,12 +199,12 @@
                                 <h3 class="text-xs font-black text-slate-800 mb-4 uppercase tracking-widest border-b border-slate-200 pb-2"><i class="fas fa-image mr-2 text-indigo-500"></i>로고 & 카피라이트 설정</h3>
                                 <div class="space-y-4">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">상단 CI 이미지 URL (없으면 텍스트 노출)</label><input type="text" id="siteHeaderLogoUrl" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="예: https://site.com/logo.png"></div>
-                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">상단 텍스트 (이미지 없을 시)</label><input type="text" id="siteHeaderLogo" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="Fintech Hub"></div>
+                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">상단 CI 이미지 URL</label><input type="text" id="siteHeaderLogoUrl" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="예: https://site.com/logo.png"></div>
+                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">상단 텍스트</label><input type="text" id="siteHeaderLogo" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="Fintech Hub"></div>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">하단 CI 이미지 URL (없으면 텍스트 노출)</label><input type="text" id="siteFooterLogoUrl" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="예: https://site.com/footer-logo.png"></div>
-                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">하단 텍스트 (이미지 없을 시)</label><input type="text" id="siteFooterTitle" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="K-Fintech Hub"></div>
+                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">하단 CI 이미지 URL</label><input type="text" id="siteFooterLogoUrl" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="예: https://site.com/footer-logo.png"></div>
+                                        <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">하단 텍스트</label><input type="text" id="siteFooterTitle" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="K-Fintech Hub"></div>
                                     </div>
                                     <div><label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">하단 카피라이트 (Copyright)</label><input type="text" id="siteFooterCopyright" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none shadow-sm transition bg-white" placeholder="© 2026 K-Fintech Global IR Platform. All rights reserved."></div>
                                 </div>
@@ -282,6 +294,7 @@
         </main>
     </div>
 
+    <!-- [MODAL] Contact 상세 수정 -->
     <div id="editModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[250] flex items-center justify-center p-4">
         <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border">
             <div class="bg-slate-900 px-8 py-6 text-white flex justify-between items-center font-bold tracking-tight text-lg uppercase">Contact Activity Report <button onclick="closeEditModal()" class="text-slate-400 hover:text-white transition"><i class="fas fa-times text-2xl"></i></button></div>
@@ -319,6 +332,7 @@
         </div>
     </div>
 
+    <!-- 기업 등록 모달 -->
     <div id="companyModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-3xl border border-indigo-100 overflow-hidden">
             <div class="bg-indigo-600 px-8 py-6 text-white flex justify-between items-center font-bold tracking-tight text-xl uppercase">K-Fintech Entity Management <button onclick="closeCompanyModal()" class="text-white hover:rotate-90 transition"><i class="fas fa-times text-2xl"></i></button></div>
@@ -351,6 +365,7 @@
         </div>
     </div>
 
+    <!-- 이메일 모달 -->
     <div id="emailModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border">
             <div class="bg-rose-50 px-8 py-6 border-b border-rose-100 flex justify-between items-center font-black tracking-tight text-lg text-rose-800 uppercase"><i class="fas fa-paper-plane mr-2"></i>Email Bulk Dispatch <button onclick="closeEmailModal()" class="text-rose-300 hover:text-rose-500 transition"><i class="fas fa-times text-2xl"></i></button></div>
@@ -624,9 +639,37 @@
         function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
 
         async function loadCompanies() {
-            const { data } = await supabaseClient.from('kfintech_directory').select('*').order('created_at', { ascending: false }); companyData = data || []; currentFilteredCompanyData = data;
+            const { data } = await supabaseClient.from('kfintech_directory').select('*').order('created_at', { ascending: false }); 
+            companyData = data || []; 
+            currentFilteredCompanyData = data || [];
+            
+            const badges = [...new Set(companyData.map(c => c.badge_text).filter(Boolean))].sort();
+            const badgeSelect = document.getElementById('filterCompanyBadge');
+            if (badgeSelect) {
+                const currentVal = badgeSelect.value;
+                badgeSelect.innerHTML = '<option value="">전체 보기 (All)</option>' + badges.map(b => `<option value="${b}">${b}</option>`).join('');
+                badgeSelect.value = currentVal;
+            }
+
+            renderCompanyTable();
+        }
+
+        function applyCompanyFilters() {
+            const badgeVal = document.getElementById('filterCompanyBadge').value;
+            if (badgeVal) {
+                currentFilteredCompanyData = companyData.filter(c => c.badge_text === badgeVal);
+            } else {
+                currentFilteredCompanyData = companyData;
+            }
+            renderCompanyTable();
+        }
+
+        function renderCompanyTable() {
             document.getElementById('total-companies').innerText = `${companyData.length}개`;
-            document.getElementById('company-list').innerHTML = companyData.map(c => {
+            const countDisplay = document.getElementById('filtered-company-count');
+            if (countDisplay) countDisplay.innerText = `조회 결과: ${currentFilteredCompanyData.length}개`;
+
+            document.getElementById('company-list').innerHTML = currentFilteredCompanyData.map(c => {
                 let logoHtml = c.logo_url ? `<img src="${c.logo_url}" class="company-logo inline-block mr-3 border shadow-sm">` : `<div class="company-logo inline-flex items-center justify-center mr-3 text-slate-300 border shadow-sm"><i class="fas fa-building text-[10px]"></i></div>`;
                 let badgeHtml = c.badge_text ? `<span class="bg-rose-50 text-rose-600 border border-rose-200 text-[9px] font-black px-1.5 py-0.5 rounded ml-2 whitespace-nowrap"><i class="fas fa-award mr-1"></i>${c.badge_text}</span>` : '';
                 let mediaHtml = ''; if(c.website) mediaHtml += `<a href="${c.website}" target="_blank" class="text-indigo-500 hover:text-indigo-700 mx-1"><i class="fas fa-globe"></i></a>`;
@@ -688,7 +731,17 @@
         
         async function saveSiteSettings() {
             if (userRole !== 'admin') return alert('관리자(Admin) 전용 메뉴입니다.');
-            const settings = [ { setting_key: 'main_title_1', setting_value: document.getElementById('siteTitle1').value }, { setting_key: 'main_title_2', setting_value: document.getElementById('siteTitle2').value }, { setting_key: 'main_hero_subtitle', setting_value: document.getElementById('siteSubtitle').value }, { setting_key: 'header_logo_url', setting_value: document.getElementById('siteHeaderLogoUrl').value }, { setting_key: 'header_logo_text', setting_value: document.getElementById('siteHeaderLogo').value }, { setting_key: 'footer_logo_url', setting_value: document.getElementById('siteFooterLogoUrl').value }, { setting_key: 'footer_title_text', setting_value: document.getElementById('siteFooterTitle').value }, { setting_key: 'footer_copyright_text', setting_value: document.getElementById('siteFooterCopyright').value } ];
+            // 🔥 수정된 부분: main_hero_subtitle 객체에 setting_value: 키를 명확하게 다시 추가했습니다!
+            const settings = [ 
+                { setting_key: 'main_title_1', setting_value: document.getElementById('siteTitle1').value }, 
+                { setting_key: 'main_title_2', setting_value: document.getElementById('siteTitle2').value }, 
+                { setting_key: 'main_hero_subtitle', setting_value: document.getElementById('siteSubtitle').value }, 
+                { setting_key: 'header_logo_url', setting_value: document.getElementById('siteHeaderLogoUrl').value }, 
+                { setting_key: 'header_logo_text', setting_value: document.getElementById('siteHeaderLogo').value }, 
+                { setting_key: 'footer_logo_url', setting_value: document.getElementById('siteFooterLogoUrl').value }, 
+                { setting_key: 'footer_title_text', setting_value: document.getElementById('siteFooterTitle').value }, 
+                { setting_key: 'footer_copyright_text', setting_value: document.getElementById('siteFooterCopyright').value } 
+            ];
             const { error } = await supabaseClient.from('site_settings').upsert(settings); 
             if (error) alert('저장 실패!'); else { logSystemAction('UPDATE', 'Site Settings', 'Updated website logos & text contents'); alert('웹사이트 설정이 저장되었습니다.'); } 
         }
